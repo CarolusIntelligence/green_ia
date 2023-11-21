@@ -3,3 +3,8 @@ doc/*.fdb_latexmk
 doc/*.fls
 doc/*.log
 doc/*.synctex.gz
+doc/*.upb
+doc/*.upa
+doc/*.out
+doc/modalites_evaluations.pdf
+
