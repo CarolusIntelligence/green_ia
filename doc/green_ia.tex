@@ -7,6 +7,8 @@
 \usepackage{pgfplotstable} 
 \pgfplotsset{compat=1.17} 
 \usepackage{tikz}
+\usepackage{hyperref}
+\usepackage{pdfcomment}
 
 \definecolor{section}{RGB}{0, 102, 153}
 \definecolor{sub_section}{RGB}{128, 0, 32}
@@ -28,9 +30,34 @@
 \end{center}
 
 \section{\textcolor{section}{Présentation du projet\\}}
-\subsection*{\textcolor{sub_section}{Discours d'introduction:}}
+\subsection*{\textcolor{sub_section}{Idées en vrac:}}
+Application web dispo sur mobile et ordinateur (responsive, HTML, CSS, JS),
+création de données grace à des scripts, puis ajout de données réelles à l'
+échelle d'un département ou d'une circonsription française. Algorithme de recommandation 
+de plats en fonction de ses habitudes, contraintes alimentaires (peut etre dans une v2 les 
+contraintes alimentaires) et de son département et de la saison en cours. Barre de recherche 
+intelligente, permettant à l'utilisateur d'entrer une phrase ou une liste de mots, qui 
+permettront de lancer une recherche précise (comme la SNCF). 
+
 \subsection*{\textcolor{sub_section}{Présentation du projet:}}
+
 \subsection*{\textcolor{sub_section}{Fonctionnalités à développer:}}
+\begin{itemize}
+  \item Scanner code barre d'un article.  
+  \item Afficher les consignes de recyclages.  
+  \item Afficher l'impact carbone.
+  \item Donner des alternatives moins émettrices de carbone, dans la base de données 
+  \href[pdfnewwindow=true]{https://fr.openfoodfacts.org/}{OpenFoodFacts} (algo de
+  recommandation). 
+  \item Ajouter les dates de collecte des déchets autour de chez sois. 
+  \item Ajouter des points de collecte (hors carte). 
+  \item Barre de recherche intelligente qui récupère les informations
+  intéressantes de sa phrase, pour lui afficher les jours et zones de ramassage, 
+  des informations carbones sur un article, des commerces proches de chez lui qui 
+  pourraient correspondrent à ces attentes (chaque utilisateur pouvant sélectionner 
+  des mots clés proposés par l'application à la suite d'une visite chez un commerçant, 
+  des articles qu'il y a trouvé ou non).
+\end{itemize}
 
 \section{\textcolor{section}{Gestion de projet\\}}
 \subsection*{\textcolor{sub_section}{Liste des taches:}}
