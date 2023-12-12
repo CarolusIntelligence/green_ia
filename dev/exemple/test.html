@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scanner de code-barres</title>
+</head>
+<body>
+  <h1>Scanner de code-barres</h1>
+  
+  <!-- Bouton pour lancer le scanner -->
+  <button id="startScanner">Scanner le code-barres</button>
+  
+  <!-- Zone pour afficher le résultat -->
+  <div id="result"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const startScannerButton = document.getElementById('startScanner');
+      const resultDiv = document.getElementById('result');
+
+      // Gestionnaire d'événement pour le clic sur le bouton
+      startScannerButton.addEventListener('click', function() {
+        // Demander à l'utilisateur l'accès à la caméra
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+          .then(function(stream) {
+            // Afficher le flux vidéo dans un élément vidéo (optionnel)
+            const videoElement = document.createElement('video');
+            videoElement.srcObject = stream;
+            videoElement.play();
+
+            // Ajouter la vidéo à la page (optionnel)
+            document.body.appendChild(videoElement);
+
+            // Utiliser la bibliothèque QuaggaJS pour le scan du code-barres
+            Quagga.init({
+              inputStream: {
+                streamLabels: 'user',
+                type: 'LiveStream',
+                target: videoElement,
+              },
+              decoder: {
+                readers: ['ean_reader']
+              }
+            }, function(err) {
+              if (err) {
+                console.error(err);
+                return;
+              }
+              // Démarrer la lecture du code-barres
+              Quagga.start();
+            });
+
+            // Gestionnaire d'événement pour la détection d'un code-barres
+            Quagga.onDetected(function(result) {
+              // Arrêter la lecture du code-barres
+              Quagga.stop();
+
+              // Fermer la caméra
+              stream.getTracks().forEach(track => track.stop());
+
+              // Afficher le résultat du scan
+              resultDiv.innerHTML = `Code-barres détecté : ${result.codeResult.code}`;
+
+              // Effectuer une requête à l'API Open Food Facts avec le code-barres
+              // (Vous devrez remplacer ceci par la véritable URL de l'API et implémenter la logique appropriée)
+              const openFoodFactsApiUrl = `https://world.openfoodfacts.org/api/v0/product/${result.codeResult.code}.json`;
+
+              // Exemple de requête fetch
+              fetch(openFoodFactsApiUrl)
+                .then(response => response.json())
+                .then(data => {
+                  console.log('Données Open Food Facts :', data);
+                  // Traiter les données reçues de l'API Open Food Facts ici
+                })
+                .catch(error => {
+                  console.error('Erreur lors de la requête à Open Food Facts :', error);
+                });
+            });
+          })
+          .catch(function(error) {
+            console.error('Erreur lors de l\'accès à la caméra :', error);
+          });
+      });
+    });
+  </script>
+
+  <!-- Inclure la bibliothèque QuaggaJS -->
+  <script src="https://cdn.jsdelivr.net/npm/quagga"></script>
+</body>
+</html>
+
