@@ -11,14 +11,13 @@ html
 }
 
 
-/* CONTENT MAIN PAGE */
-.scan_products {
-    border: 1px solid black;
-    border-radius: 0.3em;
-    text-align: justify;
-    padding: 3%;
-    margin: 5%; 
-    background-color: lightgray;
+/* CONTENU DE LA PAGE PRINCIPALE */
+.scan_products video {
+    margin: 5% 2% 2% 10%;
+    width: 80%; 
+    height: 80%;
+    border-radius: 0.4em;
+    border: 1px solid rgb(109, 141, 43);
 }
 
 
