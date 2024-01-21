@@ -28,51 +28,43 @@ html
     position: fixed;
     bottom: 0;
     width: 100%;
-    background-color: #333;
+    background-color: #d9d9d9;
     overflow: hidden;
+    height: 55px;
 }
-
-.navbar ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center; 
-}
-
-.navbar ul li {
-    margin-right: 10px;
-}
-
-.navbar ul li:last-child {
-    margin-right: 0; 
-}
-
-.navbar ul li a {
-    display: block;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-    box-sizing: border-box; 
-}
-
 .navbar ul li a img {
-    height: 25px;
+    height: 20px;
     width: auto;
 }
-
-.navbar ul li a:hover {
-    background-color: #ddd;
-    color: black;
+.img_button :hover {
+    background-color: #ababab;
+    border-radius: 0.3em;
     border: 1px solid rgb(109, 141, 43);
-    border-radius: 1em;
-    background-color: #444;
-    margin: -1px;
+    margin: -4px;
+    padding: 3px;
 }
-
-
 .menu_isol_central {
+    display: flex; 
+    justify-content: center;
+    align-items: center; 
     margin-left: 2%;
     margin-right: 2%;
+    height: 100%; 
+}
+.nav_button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 1% 2% 1% 2%;
+}
+.current_page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 1% 2% 1% 2%;
+    background-color: #ababab;
+    border-radius: 0.3em;
+    border: 1px solid rgb(109, 141, 43);
+    margin: -4px;
+    padding: 3px;
 }
