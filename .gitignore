@@ -7,3 +7,4 @@ doc/*.upb
 doc/*.upa
 doc/*.out
 doc/modalites_evaluations.pdf
+cch/data/*
