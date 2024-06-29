@@ -9,5 +9,5 @@ doc/*.out
 doc/modalites_evaluations.pdf
 cch/data_global/*
 
-cch/pred_ingredients/data/*
-cch/pred_pnns/data/*
+cch/data/*
+cch/data/*
