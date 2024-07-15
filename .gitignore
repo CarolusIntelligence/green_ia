@@ -1,13 +1,1 @@
-doc/*.aux
-doc/*.fdb_latexmk
-doc/*.fls
-doc/*.log
-doc/*.synctex.gz
-doc/*.upb
-doc/*.upa
-doc/*.out
-doc/modalites_evaluations.pdf
-cch/data_global/*
-
-cch/data/*
-cch/data/*
+data/*
