@@ -7,11 +7,13 @@ import shutil
 from requests.exceptions import RequestException
 
 
+
 url = "https://static.openfoodfacts.org/data/openfoodfacts-products.jsonl.gz"
 fileNbr = '01'
 projectPath = "/home/carolus/Documents/school/green_ia/" 
 jsonGz = projectPath + "data/" + fileNbr + "_openfoodfacts" + ".jsonl.gz"
-
+linesPerFile = 10000 # nombre de ligne pour chaque petit csv
+csvOutput = projectPath + "data/" + fileNbr + "_openfoodfacts_00/" # dossier des minis csv
 
 # fonction pour reprendre le téléchargement
 def downloadFile(url, jsonGz):
@@ -53,17 +55,18 @@ def unGzFile(jsonGz, fileNbr, projectPath):
 
 # conversion en fichier csv
 def convertToCsv(jsonl, fileNbr, projectPath):
-    csv = projectPath + "data/" + fileNbr + '_openfoodfacts_00.csv'
+    heavyCsv = projectPath + "data/" + fileNbr + '_openfoodfacts_00.csv'
     chunksize = 10000  
     chunkIter = pd.read_json(jsonl, lines=True, chunksize=chunksize)
 
     for i, chunk in enumerate(chunkIter):
         if i == 0:
-            chunk.to_csv(csv, index=False, escapechar='\\')
+            chunk.to_csv(heavyCsv, index=False, escapechar='\\')
         else:
-            chunk.to_csv(csv, mode='a', header=False, index=False, escapechar='\\')
+            chunk.to_csv(heavyCsv, mode='a', header=False, index=False, escapechar='\\')
 
     print("conversion vers csv terminée")
+    return heavyCsv
 
 def deleteFile(filePath):
     if os.path.exists(filePath):
@@ -72,9 +75,43 @@ def deleteFile(filePath):
     else:
         print(f"erreur, fichier {filePath} n'existe pas")
 
+def createFolder(folderPath):
+    try:
+        os.makedirs(folderPath, exist_ok=True)
+        print(f"dossier créé avec succès: {folderPath}")
+    except OSError as e:
+        print(f"erreur création du dossier: {e}")
+
+def splitCsv(csvFile, linesPerFile, csvOutput):
+    try:
+        chunkSize = linesPerFile
+        chunks = pd.read_csv(csvFile, chunksize=chunkSize, on_bad_lines='skip')
+        
+        all_columns = set()
+        for chunk in chunks:
+            all_columns.update(chunk.columns)
+        
+        chunks = pd.read_csv(csvFile, chunksize=chunkSize, on_bad_lines='skip')
+        
+        for i, chunk in enumerate(chunks):
+            for col in all_columns:
+                if col not in chunk.columns:
+                    chunk[col] = None
+            chunk = chunk[list(all_columns)]
+            
+            outputFile = f"{csvOutput}{i+1}_openfoodfacts_00.csv"
+            chunk.to_csv(outputFile, index=False)
+            print(f"fichier {outputFile} sauvegardé avec {len(chunk)} lignes")
+            
+    except Exception as e:
+        print(f"warning")
+
+
 
 downloadFile(url, jsonGz)
 jsonl = unGzFile(jsonGz, fileNbr, projectPath)
 deleteFile(jsonGz)
-convertToCsv(jsonl, fileNbr, projectPath)
+heavyCsv = convertToCsv(jsonl, fileNbr, projectPath)
 deleteFile(jsonl)
+createFolder(csvOutput) 
+splitCsv(heavyCsv, linesPerFile, csvOutput)
