@@ -17,6 +17,7 @@ warnings.filterwarnings("ignore", category=pd.errors.DtypeWarning)
 
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
+import jsonlines
 
 import dask
 print(dask.__version__)
@@ -26,7 +27,6 @@ print(dask.__version__)
 
 
 
-import jsonlines
 
 # Chemin vers le fichier JSONL
 file_path = '/home/carolus/Documents/school/green_ia/data/04_openfoodfacts.jsonl'
