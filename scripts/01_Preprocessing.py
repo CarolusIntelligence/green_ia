@@ -25,18 +25,16 @@ import random
 
 # configuration
 chunk_size = 5000
-file_id = '03'
+file_id = '02'
 project_path = "/home/carolus/Documents/school/green_ia/" 
 jsonl_00 = project_path + "data/" + file_id + "_openfoodfacts_00" + ".jsonl" # fichier sans aucune étape de prétraitement (dézipé) 
 jsonl_01 = project_path + 'data/' + file_id + '_openfoodfacts_01.jsonl' # fichier avec première étape de prétraitement (uniquement colonnes intéressantes)
 jsonl_02 = project_path + 'data/' + file_id + '_openfoodfacts_02.jsonl' # fichier avec deuxième étape de prétraitement (traitement intégral)
 jsonl_sample = project_path + 'data/' + file_id + '_openfoodfacts_sample.jsonl'
 col_to_keep = ['pnns_groups_1',
-               'ecoscore_data',
                'ingredients_tags',
                'packaging',
                'product_name',
-               'food_groups_tags',
                'ecoscore_tags',
                'categories_tags',
                'ecoscore_score',
