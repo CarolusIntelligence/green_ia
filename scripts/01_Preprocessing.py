@@ -18,23 +18,20 @@ warnings.filterwarnings("ignore", category=pd.errors.DtypeWarning)
 
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
-import dask
 import random
 
-
-print(dask.__version__)
 
 
 
 # configuration
 chunk_size = 5000
-file_id = '00'
+file_id = '03'
 project_path = "/home/carolus/Documents/school/green_ia/" 
-jsonl = project_path + "data/" + file_id + "_openfoodfacts" + ".jsonl"
-jsonl_filtered = project_path + 'data/' + file_id + '_openfoodfacts_filtered.jsonl'
+jsonl_00 = project_path + "data/" + file_id + "_openfoodfacts_00" + ".jsonl" # fichier sans aucune étape de prétraitement (dézipé) 
+jsonl_01 = project_path + 'data/' + file_id + '_openfoodfacts_01.jsonl' # fichier avec première étape de prétraitement (uniquement colonnes intéressantes)
+jsonl_02 = project_path + 'data/' + file_id + '_openfoodfacts_02.jsonl' # fichier avec deuxième étape de prétraitement (traitement intégral)
 jsonl_sample = project_path + 'data/' + file_id + '_openfoodfacts_sample.jsonl'
-col_to_keep = ['allergens_from_ingredients',
-               'pnns_groups_1',
+col_to_keep = ['pnns_groups_1',
                'ecoscore_data',
                'ingredients_tags',
                'packaging',
@@ -57,10 +54,10 @@ def delete_file(file_path):
 
 
 # génération jsonl filtré
-def jsonl_filtered_creator():
-    with open(jsonl, 
+def jsonl_filtered_creator(origin_file):
+    with open(origin_file, 
               'r', 
-              encoding='utf-8') as infile, open(jsonl_filtered, 'w', 
+              encoding='utf-8') as infile, open(jsonl_01, 'w', 
                                                 encoding='utf-8') as outfile:
         buffer = []
         
@@ -79,10 +76,12 @@ def jsonl_filtered_creator():
 
 # création d'un échantillion (mini jsonl) pour inspecter la qualité des données
 #  (sélection aléatoire de 1000 lignes )
-def jsonl_sample_creator():
+def jsonl_sample_creator(file_to_sample, jsonl_sample):
+    print(f"{file_to_sample}, {jsonl_sample}")
+    
     sampled_rows = []
 
-    for chunk in pd.read_json(jsonl_filtered, lines=True, chunksize=chunk_size):
+    for chunk in pd.read_json(file_to_sample, lines=True, chunksize=chunk_size):
         sampled_chunk = chunk.sample(n=min(1000, len(chunk)), 
                                      random_state=random.randint(1, 10000))
         sampled_rows.append(sampled_chunk)
@@ -96,8 +95,15 @@ def jsonl_sample_creator():
     print(f"jsonl sample created: {jsonl_sample}")
 
 
+def main_processing(jsonl_01, jsonl_02):
+    print("a developper")
+
+
 
 # main algo
-jsonl_filtered_creator()
-delete_file(jsonl)
-jsonl_sample_creator()
+jsonl_filtered_creator(jsonl_00)
+#delete_file(jsonl_00)
+#main_processing(jsonl_01, jsonl_02)
+#delete_file(jsonl_01)
+jsonl_sample_creator(jsonl_01, jsonl_sample) # puis utiliser 02 car prétraitement ok
+delete_file(jsonl_01) # temporaire
