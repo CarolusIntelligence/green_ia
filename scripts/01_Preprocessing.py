@@ -39,8 +39,8 @@ col_to_keep = ['pnns_groups_1',
                'categories_tags',
                'ecoscore_score',
                'labels_tags',
+               'code',
                'countries']
-
 
 
 def delete_file(file_path):
