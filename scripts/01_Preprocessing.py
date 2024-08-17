@@ -1,27 +1,18 @@
 import numpy as np
-import math
 import matplotlib.pyplot as plt
 import pandas as pd
-import seaborn as sea
-import sklearn
-import scipy as sc
-import nltk as nltk
-import statsmodels as statsmodels
 import os
 import warnings
-import csv
 from datetime import datetime 
 import json
-
-pd.set_option('display.max_rows', 50)
-warnings.filterwarnings("ignore", category=pd.errors.DtypeWarning)
-
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import MinMaxScaler
 import re
 from langdetect import detect
 from googletrans import Translator
 import random
+
+
+pd.set_option('display.max_rows', 50)
+warnings.filterwarnings("ignore", category=pd.errors.DtypeWarning)
 
 
 # configuration
@@ -43,6 +34,19 @@ col_to_keep = ['pnns_groups_1',
                'code',
                'countries']
 
+
+# récupérer la date du jour 
+current_date_time = datetime.now()
+date_format = "%d/%m/%Y %H:%M:%S.%f"
+start_date = current_date_time.strftime("%d/%m/%Y %H:%M:%S.%f")[:-3]
+date_code = current_date_time.strftime('%d%m%Y%H%M%S') + f"{current_date_time.microsecond // 1000:03d}"
+
+
+def add_logs(logData):
+    print(logData)
+    with open(f"{project_path}logs/01_preprocessing_{date_code}_logs.txt", "a") as logFile:
+        logFile.write(f'{logData}\n')
+
 def get_time():
     current_date = datetime.now()
     current_date = current_date.strftime("%d/%m/%Y %H:%M:%S.%f")[:-3]
@@ -59,9 +63,9 @@ def count_chunks(file_path, chunk_size):
 def delete_file(file_path):
     if os.path.exists(file_path):
         os.remove(file_path)
-        print(f"file deleted: {file_path}")
+        add_logs(f"file deleted: {file_path}")
     else:
-        print(f"ERROR, does not exists: {file_path}")
+        add_logs(f"ERROR, does not exists: {file_path}")
 
 
 # génération jsonl filtré
@@ -83,21 +87,21 @@ def jsonl_filtered_creator(origin_file):
         
         if buffer:
             outfile.writelines(buffer)
+    add_logs(f"jsonl generated, 01: {origin_file}")
 
 
 # création d'un échantillion (mini jsonl) pour inspecter la qualité des données
-#  (sélection aléatoire de 1000 lignes )
 def jsonl_sample_creator(file_to_sample, jsonl_sample, num_samples=60):
-    print(f"Sampling {num_samples} random lines from {file_to_sample} to {jsonl_sample}")
+    add_logs(f"sampling {num_samples} random lines from {file_to_sample} to {jsonl_sample}")
     with open(file_to_sample, 'r') as infile:
         total_lines = sum(1 for _ in infile)
-    print(f"Total number of lines: {total_lines}")
+    add_logs(f"total number of lines jsonl, 02: {total_lines}")
     sample_indices = random.sample(range(total_lines), num_samples)
     with open(file_to_sample, 'r') as infile, open(jsonl_sample, 'w') as outfile:
         for current_line_number, line in enumerate(infile):
             if current_line_number in sample_indices:
                 outfile.write(line)
-    print(f"Sample created and saved to {jsonl_sample}")
+    add_logs(f"jsonl sample created: {jsonl_sample}")
 
 
 def main_processing(jsonl_01, jsonl_02):
@@ -310,15 +314,17 @@ def main_processing(jsonl_01, jsonl_02):
     # lecture et traitement du fichier jsonl en morceaux
     estimated_chunks = count_chunks(jsonl_01, chunk_size)
     chunk_iter = 0
-    print(f"start time: {get_time()}, total chunk estimated: {estimated_chunks}")
-    #processed_chunks = 0
+    add_logs(f"start time preprocessing : {get_time()}, total chunk estimated: {estimated_chunks}")
     with open(jsonl_01, 'r') as infile, open(jsonl_02, 'w') as outfile:
         for chunk in pd.read_json(infile, lines=True, chunksize=chunk_size):
             chunk_iter = chunk_iter + 1
             processed_chunk = process_chunk(chunk)
             processed_chunk.to_json(outfile, orient='records', lines=True)
-            print(f"saved content, time: {get_time()}, progress: {(chunk_iter * 100) / estimated_chunks}%")
+            add_logs(f"saved content, time: {get_time()}, progress: {(chunk_iter * 100) / estimated_chunks}%")
 
+
+add_logs("01_preprocessing logs:")
+add_logs(f"chunk_size: {chunk_size} \nfile_id: {file_id} \nproject_path: {project_path} \njsonl_00 {jsonl_00} \njsonl_01: {jsonl_01} \njsonl_02: {jsonl_02} \njsonl_sample: {jsonl_sample} \ncol_to_keep: {col_to_keep}, \nstart_date: {start_date}")
 
 # main algo
 #jsonl_filtered_creator(jsonl_00)
@@ -326,3 +332,15 @@ def main_processing(jsonl_01, jsonl_02):
 main_processing(jsonl_01, jsonl_02)
 #delete_file(jsonl_01)
 jsonl_sample_creator(jsonl_02, jsonl_sample) # puis utiliser 02 car prétraitement ok
+
+# récupérer la date du jour 
+current_date_time = datetime.now()
+end_date = current_date_time.strftime("%d/%m/%Y %H:%M:%S.%f")[:-3]
+add_logs(f"end date: {end_date}")
+
+# afficher temps total execution script 
+start_date = datetime.strptime(start_date, date_format)
+end_date = datetime.strptime(end_date, date_format)
+time_difference = end_date - start_date
+time_difference_minutes = time_difference.total_seconds() / 60
+add_logs(f"execution script time: {time_difference_minutes:.2f} minutes")

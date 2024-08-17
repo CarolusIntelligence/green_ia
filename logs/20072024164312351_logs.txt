@@ -1,9 +1,0 @@
-parameters used by user:
-start date: 20/07/2024 16:43:12.351
-url: https://static.openfoodfacts.org/data/openfoodfacts-products.jsonl.gz 
-fileNbr: 01 
-projectPath: /home/carolus/Documents/school/green_ia/ 
-jsonGz: /home/carolus/Documents/school/green_ia/data/01_openfoodfacts.jsonl.gz 
-linesPerFile: 10000 
-csvPath: /home/carolus/Documents/school/green_ia/data/01_openfoodfacts_00/ 
-colToSave: ['allergens_from_ingredients', 'nutriscore_tags', 'labels_old', 'categories_old', 'pnns_groups_1', 'ecoscore_data', 'brand_owner_imported', 'ingredients_tags', 'packaging', 'ingredients_hierarchy', 'product_name', 'food_groups_tags', 'ecoscore_tags', 'nova_group', 'ingredients_from_or_that_may_be_from_palm_oil_n', 'categories_tags', 'brand_owner', 'nutrient_levels_tags', 'allergens_tags', 'ecoscore_extended_data', 'categories', 'nutriments', 'nutriscore_2021_tags', 'additives_old_n', 'ecoscore_score', 'labels_tags', 'countries']
