@@ -25,8 +25,8 @@ import random
 
 
 # configuration
-chunk_size = 20
-file_id = '01'
+chunk_size = 1000
+file_id = '02'
 project_path = "/home/carolus/Documents/school/green_ia/" 
 jsonl_00 = project_path + "data/" + file_id + "_openfoodfacts_00" + ".jsonl" # fichier sans aucune étape de prétraitement (dézipé) 
 jsonl_01 = project_path + 'data/' + file_id + '_openfoodfacts_01.jsonl' # fichier avec première étape de prétraitement (uniquement colonnes intéressantes)
@@ -42,6 +42,18 @@ col_to_keep = ['pnns_groups_1',
                'labels_tags',
                'code',
                'countries']
+
+def get_time():
+    current_date = datetime.now()
+    current_date = current_date.strftime("%d/%m/%Y %H:%M:%S.%f")[:-3]
+    return current_date
+
+
+def count_chunks(file_path, chunk_size):
+    with open(file_path, 'r') as file:
+        line_count = sum(1 for _ in file)
+    total_chunks = (line_count + chunk_size - 1) // chunk_size
+    return total_chunks
 
 
 def delete_file(file_path):
@@ -260,21 +272,17 @@ def main_processing(jsonl_01, jsonl_02):
 
 
     # lecture et traitement du fichier jsonl en morceaux
-    TEMP_TEST_IT = 0
+    print(f"start time: {get_time()}, total chunk estimated: {count_chunks(jsonl_01, chunk_size)}")
     with open(jsonl_01, 'r') as infile, open(jsonl_02, 'w') as outfile:
         for chunk in pd.read_json(infile, lines=True, chunksize=chunk_size):
-            if (TEMP_TEST_IT >= 3):
-                break
-            else : 
-                TEMP_TEST_IT = TEMP_TEST_IT +1
-                processed_chunk = process_chunk(chunk)
-                processed_chunk.to_json(outfile, orient='records', lines=True)
-                print(f"Processed and saved chunk of size {len(chunk)}")
+            processed_chunk = process_chunk(chunk)
+            processed_chunk.to_json(outfile, orient='records', lines=True)
+            print(f"saved content, time: {get_time()}")
 
 
 # main algo
 #jsonl_filtered_creator(jsonl_00)
 #delete_file(jsonl_00)
 main_processing(jsonl_01, jsonl_02)
-#delete_file(jsonl_01)
-#jsonl_sample_creator(jsonl_02, jsonl_sample) # puis utiliser 02 car prétraitement ok
+delete_file(jsonl_01)
+jsonl_sample_creator(jsonl_02, jsonl_sample) # puis utiliser 02 car prétraitement ok
