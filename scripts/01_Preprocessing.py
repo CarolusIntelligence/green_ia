@@ -87,7 +87,7 @@ def jsonl_filtered_creator(origin_file):
 
 # création d'un échantillion (mini jsonl) pour inspecter la qualité des données
 #  (sélection aléatoire de 1000 lignes )
-def jsonl_sample_creator(file_to_sample, jsonl_sample, num_samples=90):
+def jsonl_sample_creator(file_to_sample, jsonl_sample, num_samples=60):
     print(f"Sampling {num_samples} random lines from {file_to_sample} to {jsonl_sample}")
     with open(file_to_sample, 'r') as infile:
         total_lines = sum(1 for _ in infile)
@@ -243,21 +243,39 @@ def main_processing(jsonl_01, jsonl_02):
             'polska': 'poland', 
             'србија': 'serbia', 
             'dänemark': 'denmark', 
-            'mt': 'malte', 
+            'mt': 'malta', 
             'lu': 'luxembourg', 
             'nederland': 'netherlands', 
             'lb': 'lebanon', 
             'ly': 'lybia', 
             're': 'reunion',
-            'frankreich': 'france'
+            'frankreich': 'france', 
+            'schweiz': 'switzerland', 
+            'welt': 'germany', 
+            'francia': 'france', 
+            'francie': 'france', 
+            'états-unis': 'united states', 
+            'ελλάδα': 'greece', 
+            'pe': 'peru', 
+            'nc': 'new caledonia', 
+            'br': 'brazil', 
+            'hn': 'honduras'
         }
-        df['countries'] = df['countries'].replace("", None)  # Remplacer les chaînes vides par None
+        df['countries'] = df['countries'].replace("", None)
         df['countries'] = df['countries'].apply(lambda x: x if isinstance(x, list) else ([] if x is None else x.split(', ')))
         df['countries'] = df['countries'].apply(lambda x: ', '.join(x) if x else None)
-        df['countries'] = df['countries'].str.lower()  # Convertir en minuscule
-        df['countries'] = df['countries'].apply(clean_abrev)  # Appliquer la fonction de nettoyage
-        df['countries'] = df['countries'].replace(country_mapping)  # Remplacer les acronymes grâce au dictionnaire
-        df['countries'] = df['countries'].fillna('None')  # Remplacer les None par 'None'
+        df['countries'] = df['countries'].str.lower()  
+        df['countries'] = df['countries'].apply(clean_abrev)  
+        df['countries'] = df['countries'].replace(country_mapping)
+        df['countries'] = df['countries'].fillna('None')  
+        def process_countries(countries):
+            if not isinstance(countries, str):
+                return 'None'
+            countries = countries.lower()
+            countries_list = [c.strip() for c in countries.split(',')]
+            cleaned_countries = [country_mapping.get(c, c) for c in countries_list]
+            return ', '.join(cleaned_countries)
+        df['countries'] = df['countries'].apply(process_countries)
 
 
         # traitment col ECOSCORE_NOTE
@@ -290,13 +308,16 @@ def main_processing(jsonl_01, jsonl_02):
 
 
     # lecture et traitement du fichier jsonl en morceaux
-    print(f"start time: {get_time()}, total chunk estimated: {count_chunks(jsonl_01, chunk_size)}")
-    processed_chunks = 0
+    estimated_chunks = count_chunks(jsonl_01, chunk_size)
+    chunk_iter = 0
+    print(f"start time: {get_time()}, total chunk estimated: {estimated_chunks}")
+    #processed_chunks = 0
     with open(jsonl_01, 'r') as infile, open(jsonl_02, 'w') as outfile:
         for chunk in pd.read_json(infile, lines=True, chunksize=chunk_size):
+            chunk_iter = chunk_iter + 1
             processed_chunk = process_chunk(chunk)
             processed_chunk.to_json(outfile, orient='records', lines=True)
-            print(f"saved content, time: {get_time()}")
+            print(f"saved content, time: {get_time()}, progress: {(chunk_iter * 100) / estimated_chunks}%")
 
 
 # main algo
