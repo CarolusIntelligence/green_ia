@@ -1,5 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
 import pandas as pd
 import os
 import warnings
@@ -17,7 +16,7 @@ warnings.filterwarnings("ignore", category=pd.errors.DtypeWarning)
 
 # configuration
 chunk_size = 1000
-file_id = '02'
+file_id = '00'
 project_path = "/home/carolus/Documents/school/green_ia/" 
 jsonl_00 = project_path + "data/" + file_id + "_openfoodfacts_00" + ".jsonl" # fichier sans aucune étape de prétraitement (dézipé) 
 jsonl_01 = project_path + 'data/' + file_id + '_openfoodfacts_01.jsonl' # fichier avec première étape de prétraitement (uniquement colonnes intéressantes)
@@ -327,10 +326,10 @@ add_logs("01_preprocessing logs:")
 add_logs(f"chunk_size: {chunk_size} \nfile_id: {file_id} \nproject_path: {project_path} \njsonl_00 {jsonl_00} \njsonl_01: {jsonl_01} \njsonl_02: {jsonl_02} \njsonl_sample: {jsonl_sample} \ncol_to_keep: {col_to_keep}, \nstart_date: {start_date}")
 
 # main algo
-#jsonl_filtered_creator(jsonl_00)
-#delete_file(jsonl_00)
+jsonl_filtered_creator(jsonl_00)
+delete_file(jsonl_00)
 main_processing(jsonl_01, jsonl_02)
-#delete_file(jsonl_01)
+delete_file(jsonl_01)
 jsonl_sample_creator(jsonl_02, jsonl_sample) # puis utiliser 02 car prétraitement ok
 
 # récupérer la date du jour 
