@@ -16,7 +16,7 @@ warnings.filterwarnings("ignore", category=pd.errors.DtypeWarning)
 
 # configuration
 chunk_size = 1000
-file_id = '01'
+file_id = '02'
 project_path = "/home/carolus/Documents/school/green_ia/" 
 jsonl_00 = project_path + "data/" + file_id + "_openfoodfacts_00" + ".jsonl" # fichier sans aucune étape de prétraitement (dézipé) 
 jsonl_01 = project_path + 'data/' + file_id + '_openfoodfacts_01.jsonl' # fichier avec première étape de prétraitement (uniquement colonnes intéressantes)
@@ -333,6 +333,8 @@ def main_processing(jsonl_01, jsonl_02):
         df['ecoscore_note'] = df['ecoscore_note'].replace("unknown", 999)
         df['ecoscore_note'] = df['ecoscore_note'].replace("", 999)
         df['ecoscore_note'] = df['ecoscore_note'].fillna(999)
+        # remplace toutes les valeurs < 0 par 0, et toutes celles > 100 par 100
+        df['ecoscore_note'] = df['ecoscore_note'].apply(lambda x: max(0, min(x, 100)) if x < 999 else x)
 
 
         # traitment col LABELS
@@ -354,8 +356,10 @@ def main_processing(jsonl_01, jsonl_02):
             return value.count(',') + 1
         df['labels_note'] = df['labels'].apply(count_commas_plus_one)
         df.drop(columns=['labels'], inplace=True)
-
+        # ramène toutes les notes > 9 à 9
+        df['labels_note'] = df['labels_note'].apply(lambda x: min(x, 9) if pd.notna(x) else x)
         return df 
+
 
 
     # lecture et traitement du fichier jsonl en morceaux
@@ -375,9 +379,9 @@ add_logs(f"chunk_size: {chunk_size} \nfile_id: {file_id} \nproject_path: {projec
 
 # main algo
 jsonl_filtered_creator(jsonl_00)
-delete_file(jsonl_00)
+#delete_file(jsonl_00)
 main_processing(jsonl_01, jsonl_02)
-delete_file(jsonl_01)
+#delete_file(jsonl_01)
 jsonl_sample_creator(jsonl_02, jsonl_sample) # puis utiliser 02 car prétraitement ok
 
 # récupérer la date du jour 

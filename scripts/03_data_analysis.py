@@ -17,7 +17,7 @@ warnings.filterwarnings("ignore", category=pd.errors.DtypeWarning)
 
 
 chunk_size = 1000
-file_id = '01'
+file_id = '02'
 project_path = "/home/carolus/Documents/school/green_ia/" 
 jsonl_02 = project_path + 'data/' + file_id + '_openfoodfacts_02.jsonl' 
 jsonl_sample = project_path + 'data/' + file_id + "_openfoodfacts_sample.jsonl"
