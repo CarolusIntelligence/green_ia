@@ -2165,15 +2165,75 @@ def main_processing(jsonl_01, jsonl_02):
             add_logs(f"saved content, time: {get_time()}, progress: {(chunk_iter * 100) / estimated_chunks}%")
 
 
+
+# split en trois fichiers jsonl train, test et valid
+def split_jsonl_file(input_file, train_file, test_file, valid_file):
+    # Listes pour les différentes catégories de lignes
+    low_ecoscore_lines = []
+    other_lines = []
+
+    # Lire le fichier ligne par ligne
+    with open(input_file, 'r') as f:
+        for line in f:
+            record = json.loads(line)
+            if record.get('ecoscore_note', 0) < 101:
+                low_ecoscore_lines.append(record)
+            else:
+                other_lines.append(record)
+
+    # Calculer les tailles des différents ensembles pour les lignes avec ecoscore_note < 101
+    num_low_ecoscore = len(low_ecoscore_lines)
+    valid_count = int(0.05 * num_low_ecoscore)
+    test_count = int(0.15 * num_low_ecoscore)
+    train_count = num_low_ecoscore - valid_count - test_count
+
+    # Mélanger les lignes
+    random.shuffle(low_ecoscore_lines)
+    
+    # Scinder les lignes avec ecoscore_note < 101
+    valid_low = low_ecoscore_lines[:valid_count]
+    test_low = low_ecoscore_lines[valid_count:valid_count + test_count]
+    train_low = low_ecoscore_lines[valid_count + test_count:]
+
+    # Calculer les tailles des différents ensembles pour les autres lignes
+    num_other = len(other_lines)
+    valid_count_other = int(0.05 * num_other)
+    test_count_other = int(0.15 * num_other)
+    train_count_other = num_other - valid_count_other - test_count_other
+
+    # Mélanger les lignes
+    random.shuffle(other_lines)
+    
+    # Scinder les autres lignes
+    valid_other = other_lines[:valid_count_other]
+    test_other = other_lines[valid_count_other:valid_count_other + test_count_other]
+    train_other = other_lines[valid_count_other + test_count_other:]
+
+    # Combiner les lignes dans les fichiers de sortie
+    with open(valid_file, 'w') as f:
+        for record in valid_low + valid_other:
+            f.write(json.dumps(record) + '\n')
+
+    with open(test_file, 'w') as f:
+        for record in test_low + test_other:
+            f.write(json.dumps(record) + '\n')
+
+    with open(train_file, 'w') as f:
+        for record in train_low + train_other:
+            f.write(json.dumps(record) + '\n')
+
+
 add_logs("01_preprocessing logs:")
 add_logs(f"chunk_size: {chunk_size} \nfile_id: {file_id} \nproject_path: {project_path} \njsonl_00 {jsonl_00} \njsonl_01: {jsonl_01} \njsonl_02: {jsonl_02} \njsonl_sample: {jsonl_sample} \ncol_to_keep: {col_to_keep}, \nstart_date: {start_date}")
 
 # main algo
 #jsonl_filtered_creator(jsonl_00)
 #delete_file(jsonl_00)
-main_processing(jsonl_01, jsonl_02)
+#main_processing(jsonl_01, jsonl_02)
 #delete_file(jsonl_01)
-jsonl_sample_creator(jsonl_02, jsonl_sample) # puis utiliser 02 car prétraitement ok
+#jsonl_sample_creator(jsonl_02, jsonl_sample) # puis utiliser 02 car prétraitement ok
+split_jsonl_file(jsonl_02, project_path + "data/" + file_id + "_train_03" + ".jsonl", project_path + "data/" + file_id + "_test_03" + ".jsonl", project_path + "data/" + file_id + "_valid_03" + ".jsonl")
+
 
 # récupérer la date du jour 
 current_date_time = datetime.now()
