@@ -8,7 +8,7 @@ import re
 from langdetect import detect
 from googletrans import Translator
 import random
-
+import math
 
 pd.set_option('display.max_rows', 50)
 warnings.filterwarnings("ignore", category=pd.errors.DtypeWarning)
@@ -2243,12 +2243,25 @@ def split_jsonl_file(jsonl_02, train, test, valid, jsonl_03, chunk_size):
     #shuffle_jsonl(jsonl_02, jsonl_03, chunk_size) # mélanger toutes les lignes aléatoirement dans jsonl_02
     valid_ecoscore_count = line_count(jsonl_03, type = 2) # compter le nombre de lignes avec écoscore 
     invalid_ecoscore_count = line_count(jsonl_03, type = 0) # compter le nombre de lignes autres (sans écoscore)
-    line_count_number = line_count(jsonl_03, type = 1) # compter le nombre de lignes pour chaque fichier 
+    line_count_number = line_count(jsonl_03, type = 1) # compter le nombre de lignes total
+    # compter le nombre de lignes pour chaque fichier 
+    train_nb_line_ko = math.floor((line_count_number * 80) / 100) # train ecoscore ko
+    train_nb_line_ok = math.floor((line_count_number * 80) / 100) # train ecoscore ok
+    test_nb_line_ko = math.floor((line_count_number * 20) / 100) # test ecoscore ko
+    test_nb_line_ok = math.floor((line_count_number * 15) / 100) # test ecoscore ok
+    valid_nb_line_ko = math.floor((line_count_number * 0) / 100) # valid ecoscore ko
+    valid_nb_line_ok = math.floor((line_count_number * 5) / 100) # valid ecoscore ok
     # répartir les lignes entre les fichiers 
 
     add_logs(f"valid_ecoscore_count: {valid_ecoscore_count}")
     add_logs(f"invalid_ecoscore_count: {invalid_ecoscore_count}")
     add_logs(f"line_count_number: {line_count_number}")
+    add_logs(f"train_nb_line_ko: {train_nb_line_ko}")
+    add_logs(f"train_nb_line_ok: {train_nb_line_ok}")
+    add_logs(f"test_nb_line_ko: {test_nb_line_ko}")
+    add_logs(f"test_nb_line_ok: {test_nb_line_ok}")
+    add_logs(f"valid_nb_line_ko: {valid_nb_line_ko}")
+    add_logs(f"valid_nb_line_ok: {valid_nb_line_ok}")
 
 
 add_logs("01_preprocessing logs:")
