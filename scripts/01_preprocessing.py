@@ -2196,14 +2196,31 @@ def shuffle_jsonl(jsonl_02, jsonl_03, chunk_size):
         f.writelines(lines)
     os.remove(temp_file)
 
+def count_valid_ecoscore_notes(jsonl_03):
+    count = 0
+    with open(jsonl_03, 'r', encoding='utf-8') as file:
+        for line in file:
+            try:
+                obj = json.loads(line)
+                if 'ecoscore_note' in obj:
+                    value = obj['ecoscore_note']
+                    if isinstance(value, (int, float)) and 0 <= value <= 100:
+                        count += 1
+            except json.JSONDecodeError:
+                print("Erreur de décodage JSON dans la ligne suivante :")
+                print(line)
+                continue
+    return count
+
 
 def split_jsonl_file(jsonl_02, train, test, valid, jsonl_03, chunk_size):
-    # mélanger toutes les lignes aléatoirement dans jsonl_02
-    shuffle_jsonl(jsonl_02, jsonl_03, chunk_size)
-    # compter le nombre de lignes avec écoscore 
+    #shuffle_jsonl(jsonl_02, jsonl_03, chunk_size) # mélanger toutes les lignes aléatoirement dans jsonl_02
+    ecoscore_note_count = count_valid_ecoscore_notes(jsonl_03) # compter le nombre de lignes avec écoscore 
     # compter le nombre de lignes autres (sans écoscore)
     # compter le nombre de lignes pour chaque fichier 
     # répartir les lignes entre les fichiers 
+
+    print(f"ecoscore_note_count: {ecoscore_note_count}")
 
 
 add_logs("01_preprocessing logs:")
