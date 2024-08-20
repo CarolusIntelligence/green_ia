@@ -15,12 +15,13 @@ warnings.filterwarnings("ignore", category=pd.errors.DtypeWarning)
 
 
 # configuration
-chunk_size = 1000
+chunk_size = 8000
 file_id = '02'
 project_path = "/home/carolus/Documents/school/green_ia/" 
 jsonl_00 = project_path + "data/" + file_id + "_openfoodfacts_00" + ".jsonl" # fichier sans aucune étape de prétraitement (dézipé) 
 jsonl_01 = project_path + 'data/' + file_id + '_openfoodfacts_01.jsonl' # fichier avec première étape de prétraitement (uniquement colonnes intéressantes)
 jsonl_02 = project_path + 'data/' + file_id + '_openfoodfacts_02.jsonl' # fichier avec deuxième étape de prétraitement (traitement intégral)
+jsonl_03 = project_path + 'data/' + file_id + '_openfoodfacts_03.jsonl' # fichier avec troisième étape de prétraitement, mélange des lignes aléatoirement
 train = project_path + "data/" + file_id + "_train" + ".jsonl"
 test = project_path + "data/" + file_id + "_test" + ".jsonl"
 valid = project_path + "data/" + file_id + "_valid" + ".jsonl"
@@ -2169,18 +2170,44 @@ def main_processing(jsonl_01, jsonl_02):
 
 
 
-# split en trois fichiers jsonl train, test et valid
-def split_jsonl_file(jsonl_02, train, test, valid):
+
+def read_in_chunks(file_path, chunk_size):
+    with open(file_path, 'r', encoding='utf-8') as f:
+        chunk = []
+        for line in f:
+            chunk.append(json.loads(line))
+            if len(chunk) >= chunk_size:
+                yield chunk
+                chunk = []
+        if chunk:
+            yield chunk
+
+def shuffle_jsonl(jsonl_02, jsonl_03, chunk_size):
+    temp_file = jsonl_03 + '.temp'
+    with open(temp_file, 'w', encoding='utf-8') as temp_f:
+        for chunk in read_in_chunks(jsonl_02, chunk_size):
+            random.shuffle(chunk)
+            for obj in chunk:
+                temp_f.write(json.dumps(obj) + '\n')
+    with open(temp_file, 'r', encoding='utf-8') as temp_f:
+        lines = temp_f.readlines()
+        random.shuffle(lines)
+    with open(jsonl_03, 'w', encoding='utf-8') as f:
+        f.writelines(lines)
+    os.remove(temp_file)
+
+
+def split_jsonl_file(jsonl_02, train, test, valid, jsonl_03, chunk_size):
     # mélanger toutes les lignes aléatoirement dans jsonl_02
+    shuffle_jsonl(jsonl_02, jsonl_03, chunk_size)
     # compter le nombre de lignes avec écoscore 
     # compter le nombre de lignes autres (sans écoscore)
     # compter le nombre de lignes pour chaque fichier 
     # répartir les lignes entre les fichiers 
-    print("toto")
 
 
 add_logs("01_preprocessing logs:")
-add_logs(f"chunk_size: {chunk_size} \nfile_id: {file_id} \nproject_path: {project_path} \njsonl_00 {jsonl_00} \njsonl_01: {jsonl_01} \njsonl_02: {jsonl_02} \njsonl_sample: {jsonl_sample} \ncol_to_keep: {col_to_keep}, \nstart_date: {start_date}, \ntrain: {train}, \ntest: {test}, \nvalid: {valid}")
+add_logs(f"chunk_size: {chunk_size} \nfile_id: {file_id} \nproject_path: {project_path} \njsonl_00 {jsonl_00} \njsonl_01: {jsonl_01} \njsonl_02: {jsonl_02} \njsonl_sample: {jsonl_sample} \ncol_to_keep: {col_to_keep}, \nstart_date: {start_date}, \ntrain: {train}, \ntest: {test}, \nvalid: {valid}, \njsonl_03: {jsonl_03}")
 
 # main algo
 #jsonl_filtered_creator(jsonl_00)
@@ -2188,7 +2215,7 @@ add_logs(f"chunk_size: {chunk_size} \nfile_id: {file_id} \nproject_path: {projec
 #main_processing(jsonl_01, jsonl_02)
 #delete_file(jsonl_01)
 #jsonl_sample_creator(jsonl_02, jsonl_sample) # puis utiliser 02 car prétraitement ok
-split_jsonl_file(jsonl_02, train, test, valid)
+split_jsonl_file(jsonl_02, train, test, valid, jsonl_03, chunk_size)
 
 
 # récupérer la date du jour 
