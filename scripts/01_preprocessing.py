@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import jsonlines
 import os
 import warnings
 from datetime import datetime 
@@ -2238,6 +2239,54 @@ def line_count(jsonl_03, type):
                     continue
     return count
 
+def line_repartitor(jsonl_03, train, test, valid, train_nb_line_ko, train_nb_line_ok, test_nb_line_ko, test_nb_line_ok, valid_nb_line_ko, valid_nb_line_ok):
+    with jsonlines.open(train, mode='w') as train_writer, \
+         jsonlines.open(test, mode='w') as test_writer, \
+         jsonlines.open(valid, mode='w') as valid_writer:
+        
+        train_ok_iter, train_ko_iter = 0, 0
+        test_ok_iter, test_ko_iter = 0, 0
+        valid_ok_iter, valid_ko_iter = 0, 0
+        toto_iter = 0
+        
+        with jsonlines.open(jsonl_03, mode='r') as reader:
+            for obj in reader:
+                ecoscore_note = obj.get('ecoscore_note', float('inf'))
+                print(ecoscore_note)
+
+                if (ecoscore_note == 999):
+                    print(f"{train_ko_iter} < {train_nb_line_ko} ?")
+                    print(f"{test_ko_iter} < {test_nb_line_ko} ?")
+                    print(f"{valid_ko_iter} < {valid_nb_line_ko} ?")
+                    toto_iter+=1
+                    print(toto_iter)
+                    if (train_ko_iter < train_nb_line_ko):
+                        print('train_ko_iter')
+                        train_writer.write(obj) 
+                        train_ko_iter+=1 
+                    elif (test_ko_iter < test_nb_line_ko):
+                        print('test_ko_iter')
+                        test_writer.write(obj)
+                        test_ko_iter+=1
+                    elif (valid_ko_iter < valid_nb_line_ko):
+                        print('valid_ko_iter')
+                        valid_writer.write(obj)
+                        valid_ko_iter+=1
+                        
+                else: # si écoscore valid
+                    if (train_ok_iter < train_nb_line_ok): # tant que le nombre de lignes écoscore valides pour train non atteint on ne rempli pas le test
+                        print('train_ok_iter')
+                        train_writer.write(obj) # ajouter objet au fichier train 
+                        train_ok_iter+=1 # incrémente le compteur à l'origine du changement de fichier à remplir 
+                    elif (test_ok_iter < test_nb_line_ok):
+                        print('test_ok_iter')
+                        test_writer.write(obj)
+                        test_ok_iter+=1
+                    elif (valid_ok_iter < valid_nb_line_ok):
+                        print('valid_ok_iter')
+                        valid_writer.write(obj)
+                        valid_ok_iter+=1
+        
 
 def split_jsonl_file(jsonl_02, train, test, valid, jsonl_03, chunk_size):
     #shuffle_jsonl(jsonl_02, jsonl_03, chunk_size) # mélanger toutes les lignes aléatoirement dans jsonl_02
@@ -2250,9 +2299,7 @@ def split_jsonl_file(jsonl_02, train, test, valid, jsonl_03, chunk_size):
     test_nb_line_ko = math.floor((line_count_number * 20) / 100) # test ecoscore ko
     test_nb_line_ok = math.floor((line_count_number * 15) / 100) # test ecoscore ok
     valid_nb_line_ko = math.floor((line_count_number * 0) / 100) # valid ecoscore ko
-    valid_nb_line_ok = math.floor((line_count_number * 5) / 100) # valid ecoscore ok
-    # répartir les lignes entre les fichiers 
-
+    valid_nb_line_ok = math.floor((line_count_number * 5) / 100) # valid ecoscore ok 
     add_logs(f"valid_ecoscore_count: {valid_ecoscore_count}")
     add_logs(f"invalid_ecoscore_count: {invalid_ecoscore_count}")
     add_logs(f"line_count_number: {line_count_number}")
@@ -2262,6 +2309,8 @@ def split_jsonl_file(jsonl_02, train, test, valid, jsonl_03, chunk_size):
     add_logs(f"test_nb_line_ok: {test_nb_line_ok}")
     add_logs(f"valid_nb_line_ko: {valid_nb_line_ko}")
     add_logs(f"valid_nb_line_ok: {valid_nb_line_ok}")
+    # répartir les lignes entre les fichiers
+    line_repartitor(jsonl_03, train, test, valid, train_nb_line_ko, train_nb_line_ok, test_nb_line_ko, test_nb_line_ok, valid_nb_line_ko, valid_nb_line_ok)
 
 
 add_logs("01_preprocessing logs:")
