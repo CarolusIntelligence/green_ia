@@ -2180,7 +2180,7 @@ def split_jsonl_file(jsonl_02, train, test, valid):
 
 
 add_logs("01_preprocessing logs:")
-add_logs(f"chunk_size: {chunk_size} \nfile_id: {file_id} \nproject_path: {project_path} \njsonl_00 {jsonl_00} \njsonl_01: {jsonl_01} \njsonl_02: {jsonl_02} \njsonl_sample: {jsonl_sample} \ncol_to_keep: {col_to_keep}, \nstart_date: {start_date}")
+add_logs(f"chunk_size: {chunk_size} \nfile_id: {file_id} \nproject_path: {project_path} \njsonl_00 {jsonl_00} \njsonl_01: {jsonl_01} \njsonl_02: {jsonl_02} \njsonl_sample: {jsonl_sample} \ncol_to_keep: {col_to_keep}, \nstart_date: {start_date}, \ntrain: {train}, \ntest: {test}, \nvalid: {valid}")
 
 # main algo
 #jsonl_filtered_creator(jsonl_00)
