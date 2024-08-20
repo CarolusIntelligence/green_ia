@@ -2196,64 +2196,59 @@ def shuffle_jsonl(jsonl_02, jsonl_03, chunk_size):
         f.writelines(lines)
     os.remove(temp_file)
 
-def count_valid_ecoscore_notes(jsonl_03):
+
+def line_count(jsonl_03, type):
     count = 0
     with open(jsonl_03, 'r', encoding='utf-8') as file:
         for line in file:
-            try:
-                obj = json.loads(line)
-                if 'ecoscore_note' in obj:
-                    value = obj['ecoscore_note']
-                    if isinstance(value, (int, float)) and 0 <= value <= 100:
-                        count += 1
-            except json.JSONDecodeError:
-                print("Erreur de décodage JSON dans la ligne suivante :")
-                print(line)
-                continue
+            if (type == 0):
+                try:
+                    obj = json.loads(line)
+                    if 'ecoscore_note' in obj:
+                        value = obj['ecoscore_note']
+                        if isinstance(value, (int, float)) and value == 999:
+                            count += 1
+                except json.JSONDecodeError:
+                    print("Erreur de décodage JSON dans la ligne suivante :")
+                    print(line)
+                    continue
+
+            elif (type == 1):
+                try:
+                    obj = json.loads(line)
+                    if 'ecoscore_note' in obj:
+                        value = obj['ecoscore_note']
+                        if isinstance(value, (int, float)) and 0 <= value <= 999:
+                            count += 1
+                except json.JSONDecodeError:
+                    print("Erreur de décodage JSON dans la ligne suivante :")
+                    print(line)
+                    continue
+
+            elif (type == 2):
+                try:
+                    obj = json.loads(line)
+                    if 'ecoscore_note' in obj:
+                        value = obj['ecoscore_note']
+                        if isinstance(value, (int, float)) and 0 <= value <= 100:
+                            count += 1
+                except json.JSONDecodeError:
+                    print("Erreur de décodage JSON dans la ligne suivante :")
+                    print(line)
+                    continue
     return count
 
-def count_invalid_ecoscore_notes(jsonl_03):
-    count = 0
-    with open(jsonl_03, 'r', encoding='utf-8') as file:
-        for line in file:
-            try:
-                obj = json.loads(line)
-                if 'ecoscore_note' in obj:
-                    value = obj['ecoscore_note']
-                    if isinstance(value, (int, float)) and value == 999:
-                        count += 1
-            except json.JSONDecodeError:
-                print("Erreur de décodage JSON dans la ligne suivante :")
-                print(line)
-                continue
-    return count
-
-def line_count(jsonl_03):
-    count = 0
-    with open(jsonl_03, 'r', encoding='utf-8') as file:
-        for line in file:
-            try:
-                obj = json.loads(line)
-                if 'ecoscore_note' in obj:
-                    value = obj['ecoscore_note']
-                    if isinstance(value, (int, float)) and 0 <= value <= 999:
-                        count += 1
-            except json.JSONDecodeError:
-                print("Erreur de décodage JSON dans la ligne suivante :")
-                print(line)
-                continue
-    return count
 
 def split_jsonl_file(jsonl_02, train, test, valid, jsonl_03, chunk_size):
     #shuffle_jsonl(jsonl_02, jsonl_03, chunk_size) # mélanger toutes les lignes aléatoirement dans jsonl_02
-    valid_ecoscore_count = count_valid_ecoscore_notes(jsonl_03) # compter le nombre de lignes avec écoscore 
-    invalid_ecoscore_count = count_invalid_ecoscore_notes(jsonl_03) # compter le nombre de lignes autres (sans écoscore)
-    line_count_number = line_count(jsonl_03) # compter le nombre de lignes pour chaque fichier 
+    valid_ecoscore_count = line_count(jsonl_03, type = 2) # compter le nombre de lignes avec écoscore 
+    invalid_ecoscore_count = line_count(jsonl_03, type = 0) # compter le nombre de lignes autres (sans écoscore)
+    line_count_number = line_count(jsonl_03, type = 1) # compter le nombre de lignes pour chaque fichier 
     # répartir les lignes entre les fichiers 
 
-    print(f"valid_ecoscore_count: {valid_ecoscore_count}")
-    print(f"invalid_ecoscore_count: {invalid_ecoscore_count}")
-    print(f"line_count_number: {line_count_number}")
+    add_logs(f"valid_ecoscore_count: {valid_ecoscore_count}")
+    add_logs(f"invalid_ecoscore_count: {invalid_ecoscore_count}")
+    add_logs(f"line_count_number: {line_count_number}")
 
 
 add_logs("01_preprocessing logs:")
