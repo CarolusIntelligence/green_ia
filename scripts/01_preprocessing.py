@@ -2247,68 +2247,68 @@ def line_repartitor(jsonl_03, train, test, valid, train_nb_line_ko, train_nb_lin
         train_ok_iter, train_ko_iter = 0, 0
         test_ok_iter, test_ko_iter = 0, 0
         valid_ok_iter, valid_ko_iter = 0, 0
-        toto_iter = 0
+        total_iter, ok_iter, ko_iter = 0, 0, 0
         
         with jsonlines.open(jsonl_03, mode='r') as reader:
             for obj in reader:
                 ecoscore_note = obj.get('ecoscore_note', float('inf'))
-                print(ecoscore_note)
+                total_iter+=1
 
                 if (ecoscore_note == 999):
-                    print(f"{train_ko_iter} < {train_nb_line_ko} ?")
-                    print(f"{test_ko_iter} < {test_nb_line_ko} ?")
-                    print(f"{valid_ko_iter} < {valid_nb_line_ko} ?")
-                    toto_iter+=1
-                    print(toto_iter)
-                    if (train_ko_iter < train_nb_line_ko):
-                        print('train_ko_iter')
-                        train_writer.write(obj) 
-                        train_ko_iter+=1 
-                    elif (test_ko_iter < test_nb_line_ko):
-                        print('test_ko_iter')
-                        test_writer.write(obj)
-                        test_ko_iter+=1
-                    elif (valid_ko_iter < valid_nb_line_ko):
-                        print('valid_ko_iter')
+                    if (valid_ko_iter < valid_nb_line_ko):
                         valid_writer.write(obj)
                         valid_ko_iter+=1
-                        
-                else: # si écoscore valid
-                    if (train_ok_iter < train_nb_line_ok): # tant que le nombre de lignes écoscore valides pour train non atteint on ne rempli pas le test
-                        print('train_ok_iter')
-                        train_writer.write(obj) # ajouter objet au fichier train 
-                        train_ok_iter+=1 # incrémente le compteur à l'origine du changement de fichier à remplir 
-                    elif (test_ok_iter < test_nb_line_ok):
-                        print('test_ok_iter')
+                    elif (test_ko_iter < test_nb_line_ko):
                         test_writer.write(obj)
-                        test_ok_iter+=1
-                    elif (valid_ok_iter < valid_nb_line_ok):
-                        print('valid_ok_iter')
+                        test_ko_iter+=1
+                    elif (train_ko_iter < train_nb_line_ko):
+                        train_writer.write(obj)
+                        train_ko_iter+=1    
+                    ko_iter+=1
+
+                elif(ecoscore_note < 101 and ecoscore_note >= 0):                    
+                    if (valid_ok_iter < valid_nb_line_ok):
                         valid_writer.write(obj)
                         valid_ok_iter+=1
-        
+                    elif (test_ok_iter < test_nb_line_ok):
+                        test_writer.write(obj)
+                        test_ok_iter+=1
+                    elif (train_ok_iter < train_nb_line_ok):
+                        train_writer.write(obj)
+                        train_ok_iter+=1    
+                    ok_iter+=1
 
+        add_logs(f"nombre objets comptés: {total_iter}")
+        add_logs(f"ecoscore ok comptés: {ok_iter}")
+        add_logs(f"ecoscore ko comptés: {ko_iter}")
+        add_logs(f"lignes ko ajoutés à valid: {valid_ko_iter}")
+        add_logs(f"lignes ko ajoutés à test: {test_ko_iter}")
+        add_logs(f"lignes ko ajoutés à train: {train_ko_iter}")
+        add_logs(f"lignes ok ajoutés à valid: {valid_ok_iter}")
+        add_logs(f"lignes ok ajoutés à test: {test_ok_iter}")
+        add_logs(f"lignes ok ajoutés à train: {train_ok_iter}")
+                
 def split_jsonl_file(jsonl_02, train, test, valid, jsonl_03, chunk_size):
     #shuffle_jsonl(jsonl_02, jsonl_03, chunk_size) # mélanger toutes les lignes aléatoirement dans jsonl_02
     valid_ecoscore_count = line_count(jsonl_03, type = 2) # compter le nombre de lignes avec écoscore 
     invalid_ecoscore_count = line_count(jsonl_03, type = 0) # compter le nombre de lignes autres (sans écoscore)
     line_count_number = line_count(jsonl_03, type = 1) # compter le nombre de lignes total
     # compter le nombre de lignes pour chaque fichier 
-    train_nb_line_ko = math.floor((line_count_number * 80) / 100) # train ecoscore ko
-    train_nb_line_ok = math.floor((line_count_number * 80) / 100) # train ecoscore ok
-    test_nb_line_ko = math.floor((line_count_number * 20) / 100) # test ecoscore ko
-    test_nb_line_ok = math.floor((line_count_number * 15) / 100) # test ecoscore ok
-    valid_nb_line_ko = math.floor((line_count_number * 0) / 100) # valid ecoscore ko
-    valid_nb_line_ok = math.floor((line_count_number * 5) / 100) # valid ecoscore ok 
-    add_logs(f"valid_ecoscore_count: {valid_ecoscore_count}")
-    add_logs(f"invalid_ecoscore_count: {invalid_ecoscore_count}")
-    add_logs(f"line_count_number: {line_count_number}")
-    add_logs(f"train_nb_line_ko: {train_nb_line_ko}")
-    add_logs(f"train_nb_line_ok: {train_nb_line_ok}")
-    add_logs(f"test_nb_line_ko: {test_nb_line_ko}")
-    add_logs(f"test_nb_line_ok: {test_nb_line_ok}")
-    add_logs(f"valid_nb_line_ko: {valid_nb_line_ko}")
-    add_logs(f"valid_nb_line_ok: {valid_nb_line_ok}")
+    train_nb_line_ko = math.floor((invalid_ecoscore_count * 80) / 100) # train ecoscore ko
+    train_nb_line_ok = math.floor((valid_ecoscore_count * 80) / 100) # train ecoscore ok
+    test_nb_line_ko = math.floor((invalid_ecoscore_count * 20) / 100) # test ecoscore ko
+    test_nb_line_ok = math.floor((valid_ecoscore_count * 15) / 100) # test ecoscore ok
+    valid_nb_line_ko = math.floor((invalid_ecoscore_count * 0) / 100) # valid ecoscore ko
+    valid_nb_line_ok = math.floor((valid_ecoscore_count * 5) / 100) # valid ecoscore ok 
+    add_logs(f"ecoscore ok: {valid_ecoscore_count}")
+    add_logs(f"ecoscore ko: {invalid_ecoscore_count}")
+    add_logs(f"nombre d'objets total: {line_count_number}")
+    add_logs(f"ko attendus dans train: {train_nb_line_ko}")
+    add_logs(f"ok attendus dans train: {train_nb_line_ok}")
+    add_logs(f"ko attendus dans test: {test_nb_line_ko}")
+    add_logs(f"ok attendus dans test: {test_nb_line_ok}")
+    add_logs(f"ko attendus dans valid: {valid_nb_line_ko}")
+    add_logs(f"ok attendus dans valid: {valid_nb_line_ok}")
     # répartir les lignes entre les fichiers
     line_repartitor(jsonl_03, train, test, valid, train_nb_line_ko, train_nb_line_ok, test_nb_line_ko, test_nb_line_ok, valid_nb_line_ko, valid_nb_line_ok)
 
