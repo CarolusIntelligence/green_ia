@@ -158,7 +158,7 @@ def main_processing(jsonl_01, jsonl_02):
         df['code'] = df['code'].apply(lambda x: np.nan if pd.isna(x) else int(round(x)))
 
 
-        # supprime les lignes où le code ean ou le nom produit sont absents 
+        # supprime les lignes où le code unique ou le nom produit sont absents 
         df = df[df['name'].notna() & df['code'].notna()]
 
 
@@ -2124,7 +2124,7 @@ def main_processing(jsonl_01, jsonl_02):
             if not isinstance(countries, str):
                 return 'None'
             countries_list = [c.strip() for c in countries.split(',')]
-            updated_countries = [c if c not in rare_countries else 'none' for c in countries_list]
+            updated_countries = [c if c not in rare_countries else 'None' for c in countries_list]
             return ', '.join(updated_countries)
         df['countries'] = df['countries'].apply(replace_rare_countries)
 
@@ -2135,6 +2135,14 @@ def main_processing(jsonl_01, jsonl_02):
         df['ecoscore_note'] = df['ecoscore_note'].fillna(999)
         # remplace toutes les valeurs < 0 par 0, et toutes celles > 100 par 100
         df['ecoscore_note'] = df['ecoscore_note'].apply(lambda x: max(0, min(x, 100)) if x < 999 else x)
+
+
+        # supprime les lignes avec trop de None
+        df = df[~(
+        (df['groups'].isna() & df['categories'].isna()) |
+        (df['ecoscore_groups'].isna() & df['groups'].isna()) |
+        (df['ecoscore_groups'].isna() & df['categories'].isna())
+        )]
 
 
         # traitment col LABELS
