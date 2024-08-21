@@ -139,13 +139,15 @@ def main_processing(jsonl_01, jsonl_02):
 
 
         # traitement col GROUPS 
-        df['groups'] = df['groups'].replace("unknown", None, regex=False)  
+        df['groups'] = df['groups'].replace("unknown", None, regex=False)
+        df['groups'] = df['groups'].str.lower() 
         #df['groups'] = df['groups'].apply(translate_to_english)
 
 
         # traitement col NAME
         df['name'] = df['name'].replace("", None)  
         df['name'] = df['name'].replace({np.nan: None})
+        df['name'] = df['name'].str.lower()
         #df['name'] = df['name'].apply(translate_to_english)
 
 
@@ -183,6 +185,8 @@ def main_processing(jsonl_01, jsonl_02):
                 return re.sub(r'\b\w{2}:\b', '', s)
             return s
         df['packaging'] = df['packaging'].apply(remove_two_letters_and_colon)
+        df['packaging'] = df['packaging'].astype(str)
+        df['packaging'] = df['packaging'].str.lower()
         #df['packaging'] = df['packaging'].apply(translate_to_english)
 
 
@@ -2319,10 +2323,10 @@ add_logs(f"chunk_size: {chunk_size} \nfile_id: {file_id} \nproject_path: {projec
 # main algo
 #jsonl_filtered_creator(jsonl_00)
 #delete_file(jsonl_00)
-#main_processing(jsonl_01, jsonl_02)
+main_processing(jsonl_01, jsonl_02)
 #delete_file(jsonl_01)
-#jsonl_sample_creator(jsonl_02, jsonl_sample) # puis utiliser 02 car prétraitement ok
-split_jsonl_file(jsonl_02, train, test, valid, jsonl_03, chunk_size)
+jsonl_sample_creator(jsonl_02, jsonl_sample) # puis utiliser 02 car prétraitement ok
+#split_jsonl_file(jsonl_02, train, test, valid, jsonl_03, chunk_size)
 
 
 # récupérer la date du jour 
