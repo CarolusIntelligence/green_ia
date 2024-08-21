@@ -13,7 +13,7 @@ warnings.filterwarnings("ignore", category=pd.errors.DtypeWarning)
 
 
 download_url = "https://static.openfoodfacts.org/data/openfoodfacts-products.jsonl.gz"
-file_id = '02'
+file_id = '00'
 project_path = "/home/carolus/Documents/school/green_ia/" 
 jsonl_gz = project_path + "data/" + file_id + "_openfoodfacts_00" + ".jsonl.gz"
 
