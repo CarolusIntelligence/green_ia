@@ -34,6 +34,16 @@ def main(download_url, file_id, project_path):
             logFile.write(f'{logData}\n')
 
 
+    # création dossier 
+    def create_folder(folder_name):
+        if not os.path.exists(folder_name):
+            os.makedirs(folder_name)
+            print(f"folder '{folder_name}' created")
+        else:
+            print(f"folder '{folder_name}' already exists")
+            sys.exit()
+
+
     # fonction pour reprendre le téléchargement
     def download_file(download_url, jsonl_gz):
         add_logs("start downloading file from Open Food Facts data base")
@@ -96,6 +106,7 @@ def main(download_url, file_id, project_path):
 
 
     # main algo
+    create_folder(project_path + '/data/' + file_id + '_data/')
     download_file(download_url, jsonl_gz)
     jsonl = un_gz_file(jsonl_gz, file_id, project_path)
     delete_file(jsonl_gz)
