@@ -21,6 +21,7 @@ def main(chunk_size, file_id, project_path):
     print("chunk_size:", chunk_size)
     print("File ID:", file_id)
     print("Project Path:", project_path)
+    chunk_size = int(chunk_size)
 
     jsonl_02 = project_path + 'data/' + file_id + '_train.jsonl' 
     jsonl_sample = project_path + 'data/' + file_id + "_openfoodfacts_sample.jsonl"
@@ -215,10 +216,10 @@ def main(chunk_size, file_id, project_path):
     counts, total_counts = count_specific_values(jsonl_02)
 
     z_percentage = calculate_percentage(counts['ecoscore_groups']['z'], total_counts['ecoscore_groups'])
-    number_999 = counts['ecoscore_note'][999]
+    number_999 = counts['ecoscore_note'][np.nan]
     number_999_percentage = calculate_percentage(number_999, total_counts['ecoscore_note'])
 
-    labels = ['Ecoscore Groups (z)', 'Ecoscore Note (999)']
+    labels = ['Ecoscore Groups (z)', 'Ecoscore Note (np.nan)']
     values = [z_percentage, number_999_percentage]
     counts_values = [counts['ecoscore_groups']['z'], counts['ecoscore_note'][999]]
     add_logs(f"ecoscore groups: {z_percentage}")
