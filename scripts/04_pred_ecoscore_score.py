@@ -10,7 +10,9 @@ import seaborn as sea
 import sklearn
 import scipy as sc
 import nltk as nltk
-import statsmodels as statsmodels import os
+import statsmodels as statsmodels 
+import os
+from sklearn.preprocessing import LabelEncoder, StandardScaler
 
 
 def setup_gpu():
@@ -41,10 +43,45 @@ def load_data_in_batches(train, test, valid, batch_size=1000):
     return train_batches, valid_batches, test_batches
 
 def training(train_batches, test_batches):
+    label_encoders = {}
+    is_first_batch = True
+    scaler = StandardScaler()
     for batch in train_batches:
-        # passerbatch au modèle deep learning
-        # model.train_on_batch(batch)
+        y = batch['ecoscore_score'].values
+        x = batch[['groups', 'packaging', 'name', 'countries', 'ingredients', 'categories', 'labels-note']]
+        # encodage colonnes catégorielles
+        if is_first_batch:
+            for column in x.select_dtypes(include=['object']).columns:
+                label_encoders[column] = LabelEncoder()
+                x[column] = label_encoders[column].fit_transform(x[column])
+            x_scaled = scaler.fit_transform(x)
+            is_first_batch = False
+        else:
+            # appliquer encodage avec encodeurs déjà appris
+            for column in x.select_dtypes(include=['object']).columns:
+                x[column] = label_encoders[column].transform(x[column])
+            x_scaled = scaler.transform(x)
+
+        x_train = tf.convert_to_tensor(x_scaled, dtype=tf.float32)
+        y_train = tf.convert_to_tensor(y, dtype=tf.float32)
+        
+        # Passer le lot traité (x_train, y_train) au modèle de deep learning
+        # model.train_on_batch(x_train, y_train)
         pass
+
+    # prétraitement lots de test
+    for batch in test_batches:
+        batch.fillna('Unknown', inplace=True)
+        y = batch['ecoscore_score'].values
+        x = batch[['groups', 'packaging', 'name', 'countries', 'ingredients', 'categories', 'labels-note']]
+        for column in x.select_dtypes(include=['object']).columns:
+            x[column] = label_encoders[column].transform(x[column])
+        x_scaled = scaler.transform(x)
+        x_test = tf.convert_to_tensor(x_scaled, dtype=tf.float32)
+        y_test = tf.convert_to_tensor(y, dtype=tf.float32)
+        # Utilisez x_test et y_test pour évaluer le modèle
+        # model.evaluate(x_test, y_test)
+        pass  
 
 
 
