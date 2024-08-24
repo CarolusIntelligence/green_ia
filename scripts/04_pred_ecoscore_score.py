@@ -40,6 +40,12 @@ def load_data_in_batches(train, test, valid, batch_size=1000):
     test_batches = read_jsonl_in_batches(test, batch_size)
     return train_batches, valid_batches, test_batches
 
+def training(train_batches, test_batches):
+    for batch in train_batches:
+        # passerbatch au modèle deep learning
+        # model.train_on_batch(batch)
+        pass
+
 
 
 ###############################################################################
@@ -53,10 +59,7 @@ def main(file_id, data_path):
     print("setup gpu")
     setup_gpu()
     train_batches, valid_batches, test_batches = load_data_in_batches(train, test, valid)
-    for batch in train_batches:
-        # passerbatch au modèle deep learning
-        # model.train_on_batch(batch)
-        pass
+    training(train_batches, test_batches)
 
 if __name__ == "__main__":
     file_id = sys.argv[1]
