@@ -39,9 +39,9 @@ def extract_keywords(text_series):
         keywords.append(' '.join([word for word, score in sorted_words]))
     return keywords
 
-def processing(jsonl_04, jsonl_05, chunk_size): 
-    with open(jsonl_05, 'w') as outfile:
-        with open(jsonl_04, 'r') as infile:
+def processing(jsonl_03, jsonl_04, chunk_size): 
+    with open(jsonl_04, 'w') as outfile:
+        with open(jsonl_03, 'r') as infile:
             batch = []
             for line in infile:
                 try:
@@ -72,12 +72,12 @@ def processing(jsonl_04, jsonl_05, chunk_size):
 ###############################################################################
 def main(chunk_size, file_id, data_path):
     chunk_size = int(chunk_size)
+    jsonl_03 = data_path + file_id + '_openfoodfacts_03.jsonl' 
     jsonl_04 = data_path + file_id + '_openfoodfacts_04.jsonl' 
-    jsonl_05 = data_path + file_id + '_openfoodfacts_05.jsonl' 
     print("start nlp processing")
-    processing(jsonl_04, jsonl_05, chunk_size)
-    #print("deleting file jsonl 04")
-    #delete_file(jsonl_04)
+    processing(jsonl_03, jsonl_04, chunk_size)
+    #print("deleting file jsonl 03")
+    #delete_file(jsonl_03)
 
 if __name__ == "__main__":
     file_id = sys.argv[1]

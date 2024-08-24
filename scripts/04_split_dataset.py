@@ -21,9 +21,9 @@ def delete_file(file_path):
     else:
         print(f"ERROR, does not exists: {file_path}")
 
-def line_count(jsonl_03, type):
+def line_count(jsonl_04, type):
     count = 0
-    with open(jsonl_03, 'r', encoding='utf-8') as file:
+    with open(jsonl_04, 'r', encoding='utf-8') as file:
         for line in file:
             if (type == 0): # sans écoscore score 
                 try:
@@ -97,7 +97,7 @@ def validation(total_iter, ok_iter, ko_iter, valid_ko_iter, test_ko_iter, train_
         ok_check = False 
     return ok_check, ko_check, count_check
 
-def line_repartitor(jsonl_03, train, test, valid, train_nb_line_ko, train_nb_line_ok, test_nb_line_ko, test_nb_line_ok, valid_nb_line_ko, valid_nb_line_ok):
+def line_repartitor(jsonl_04, train, test, valid, train_nb_line_ko, train_nb_line_ok, test_nb_line_ko, test_nb_line_ok, valid_nb_line_ko, valid_nb_line_ok):
     with jsonlines.open(train, mode='w') as train_writer, \
         jsonlines.open(test, mode='w') as test_writer, \
         jsonlines.open(valid, mode='w') as valid_writer:
@@ -105,7 +105,7 @@ def line_repartitor(jsonl_03, train, test, valid, train_nb_line_ko, train_nb_lin
         test_ok_iter, test_ko_iter = 0, 0
         valid_ok_iter, valid_ko_iter = 0, 0
         total_iter, ok_iter, ko_iter = 0, 0, 0
-        with jsonlines.open(jsonl_03, mode='r') as reader:
+        with jsonlines.open(jsonl_04, mode='r') as reader:
             for obj in reader:
                 #ecoscore_score = obj.get('ecoscore_score', float('inf'))
                 ecoscore_score = obj.get('ecoscore_score', float('nan'))
@@ -146,8 +146,8 @@ def read_in_chunks(file_path, chunk_size):
         if chunk:
             yield chunk
             
-def shuffle_jsonl(jsonl_02, jsonl_03, chunk_size):
-    temp_file = jsonl_03 + '.temp'
+def shuffle_jsonl(jsonl_02, jsonl_04, chunk_size):
+    temp_file = jsonl_04 + '.temp'
     with open(temp_file, 'w', encoding='utf-8') as temp_f:
         for chunk in read_in_chunks(jsonl_02, chunk_size):
             random.shuffle(chunk)
@@ -156,15 +156,15 @@ def shuffle_jsonl(jsonl_02, jsonl_03, chunk_size):
     with open(temp_file, 'r', encoding='utf-8') as temp_f:
         lines = temp_f.readlines()
         random.shuffle(lines)
-    with open(jsonl_03, 'w', encoding='utf-8') as f:
+    with open(jsonl_04, 'w', encoding='utf-8') as f:
         f.writelines(lines)
     os.remove(temp_file)
 
-def split_jsonl_file(jsonl_03, train, test, valid, jsonl_04, chunk_size):
-    shuffle_jsonl(jsonl_03, jsonl_04, chunk_size) # mélanger toutes les lignes aléatoirement dans jsonl_02
-    valid_ecoscore_count = line_count(jsonl_04, type = 2) # compter le nombre de lignes avec écoscore 
-    invalid_ecoscore_count = line_count(jsonl_04, type = 0) # compter le nombre de lignes autres (sans écoscore)
-    line_count_number = line_count(jsonl_04, type = 1) # compter le nombre de lignes total
+def split_jsonl_file(jsonl_04, train, test, valid, jsonl_05, chunk_size):
+    shuffle_jsonl(jsonl_04, jsonl_05, chunk_size) # mélanger toutes les lignes aléatoirement dans jsonl_02
+    valid_ecoscore_count = line_count(jsonl_05, type = 2) # compter le nombre de lignes avec écoscore 
+    invalid_ecoscore_count = line_count(jsonl_05, type = 0) # compter le nombre de lignes autres (sans écoscore)
+    line_count_number = line_count(jsonl_05, type = 1) # compter le nombre de lignes total
     # compter le nombre de lignes pour chaque fichier 
     train_nb_line_ko = math.floor((invalid_ecoscore_count * 80) / 100) # train ecoscore ko
     train_nb_line_ok = math.floor((valid_ecoscore_count * 80) / 100) # train ecoscore ok
@@ -173,7 +173,7 @@ def split_jsonl_file(jsonl_03, train, test, valid, jsonl_04, chunk_size):
     valid_nb_line_ko = math.floor((invalid_ecoscore_count * 0) / 100) # valid ecoscore ko
     valid_nb_line_ok = math.floor((valid_ecoscore_count * 5) / 100) # valid ecoscore ok 
     # répartir les lignes entre les fichiers
-    line_repartitor(jsonl_04, train, test, valid, train_nb_line_ko, train_nb_line_ok, test_nb_line_ko, test_nb_line_ok, valid_nb_line_ko, valid_nb_line_ok)
+    line_repartitor(jsonl_05, train, test, valid, train_nb_line_ko, train_nb_line_ok, test_nb_line_ko, test_nb_line_ok, valid_nb_line_ko, valid_nb_line_ok)
 
 
 
@@ -182,15 +182,15 @@ def split_jsonl_file(jsonl_03, train, test, valid, jsonl_04, chunk_size):
 ###############################################################################
 def main(chunk_size, file_id, data_path):
     chunk_size = int(chunk_size)
-    jsonl_03 = data_path + file_id + '_openfoodfacts_03.jsonl' 
     jsonl_04 = data_path + file_id + '_openfoodfacts_04.jsonl' 
+    jsonl_05 = data_path + file_id + '_openfoodfacts_05.jsonl' 
     train = data_path + file_id + "_train" + ".jsonl"
     test = data_path + file_id + "_test" + ".jsonl"
     valid = data_path + file_id + "_valid" + ".jsonl"
     print("start spliting dataset")
-    split_jsonl_file(jsonl_03, train, test, valid, jsonl_04, chunk_size)
+    split_jsonl_file(jsonl_04, train, test, valid, jsonl_05, chunk_size)
     print("deleting file jsonl 03")
-    delete_file(jsonl_03)
+    delete_file(jsonl_04)
 
 if __name__ == "__main__":
     chunk_size = sys.argv[1]
