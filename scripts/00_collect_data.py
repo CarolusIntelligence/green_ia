@@ -63,7 +63,6 @@ def main(download_url, file_id, data_path, chunk_size):
     chunk_size = int(chunk_size)
     jsonl_gz = data_path + file_id + "_openfoodfacts_00" + ".jsonl.gz"
     jsonl = data_path + file_id + '_openfoodfacts_01.jsonl'
-
     print("create folder")
     create_folder(data_path)
     print("start downloading jsonl file from open food facts data-base")

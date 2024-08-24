@@ -2078,12 +2078,12 @@ def main(chunk_size, file_id, data_path):
                          "not-applicable",
                          "nan",
                          "NaN"]
-
     print("estimating necessary chunk number")
     estimated_chunks = count_chunks(jsonl_02, chunk_size)
     print("browse throw jsonl 02 file to process columns")
     browse_file(estimated_chunks, jsonl_02, jsonl_03, chunk_size, values_to_replace)
-    #delete_file(jsonl_01)
+    print("deleting file jsonl 02")
+    delete_file(jsonl_02)
 
 if __name__ == "__main__":
     chunk_size = sys.argv[1]

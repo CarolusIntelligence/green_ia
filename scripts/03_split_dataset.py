@@ -175,6 +175,11 @@ def split_jsonl_file(jsonl_03, train, test, valid, jsonl_04, chunk_size):
     # répartir les lignes entre les fichiers
     line_repartitor(jsonl_04, train, test, valid, train_nb_line_ko, train_nb_line_ok, test_nb_line_ko, test_nb_line_ok, valid_nb_line_ko, valid_nb_line_ok)
 
+
+
+###############################################################################
+# MAIN ########################################################################
+###############################################################################
 def main(chunk_size, file_id, data_path):
     chunk_size = int(chunk_size)
     jsonl_03 = data_path + file_id + '_openfoodfacts_03.jsonl' 
@@ -182,10 +187,10 @@ def main(chunk_size, file_id, data_path):
     train = data_path + file_id + "_train" + ".jsonl"
     test = data_path + file_id + "_test" + ".jsonl"
     valid = data_path + file_id + "_valid" + ".jsonl"
-
     print("start spliting dataset")
     split_jsonl_file(jsonl_03, train, test, valid, jsonl_04, chunk_size)
-
+    print("deleting file jsonl 03")
+    delete_file(jsonl_03)
 
 if __name__ == "__main__":
     chunk_size = sys.argv[1]
