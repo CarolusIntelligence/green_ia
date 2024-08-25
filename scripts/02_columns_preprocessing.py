@@ -2034,21 +2034,21 @@ def categories_processing(df, values_to_replace):
     return df
 
 def delete_useless_lines(df, values_to_replace):
-    df = df[~df['name'].isin(values_to_replace) & ~df['code'].isin(values_to_replace)]
+    df = df[~df['name'].isin(values_to_replace)]
     return df
 
 def process_chunk(chunk, values_to_replace):
     df = chunk.copy()
     rename_columns_processing(df)
-    #groups_processing(df, values_to_replace)
-    #ingredients_processing(df, values_to_replace)
-    #packaging_processing(df, values_to_replace)
-    #ecoscore_tags_processing(df, values_to_replace)
-    #categories_processing(df, values_to_replace)
+    groups_processing(df, values_to_replace)
+    ingredients_processing(df, values_to_replace)
+    packaging_processing(df, values_to_replace)
+    ecoscore_tags_processing(df, values_to_replace)
+    categories_processing(df, values_to_replace)
     #code_processing(df, values_to_replace)
-    #name_processing(df, values_to_replace)
-    #ecoscore_score_processing(df, values_to_replace)
-    #countries_processing(df, values_to_replace)
+    name_processing(df, values_to_replace)
+    ecoscore_score_processing(df, values_to_replace)
+    countries_processing(df, values_to_replace)
     labels_processing(df, values_to_replace)
     delete_useless_lines(df, values_to_replace)
     return df
@@ -2062,6 +2062,7 @@ def browse_file(estimated_chunks, jsonl_02, jsonl_03, chunk_size, values_to_repl
             processed_chunk = process_chunk(chunk, values_to_replace)
             processed_chunk.to_json(outfile, orient='records', lines=True)
             print(f"-----------------------------------------------------------> progress: {(chunk_iter * 100) / estimated_chunks} %")            
+
 
 
 ###############################################################################

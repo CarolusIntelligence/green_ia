@@ -44,7 +44,6 @@ def main(chunk_size, file_id, data_path):
                 'categories_tags',
                 'ecoscore_score',
                 'labels_tags',
-                'code',
                 'countries']
     print("generating jsonl 02 with only usefull columns")
     jsonl_filtered_creator(jsonl_01, columns_to_keep, jsonl_02, chunk_size)
