@@ -2209,6 +2209,7 @@ def name_processing(df, values_to_replace):
     df['name'] = df['name'].astype(str)
     df.loc[:, 'name'] = df['name'].str.lower()
     df = df[df['name'] != ''].copy()  
+    df['ingredients'] = df['ingredients'].replace(values_to_replace, 'empty') 
     return df
 
 def code_processing(df, values_to_replace): 
@@ -2228,11 +2229,10 @@ def ingredients_processing(df, values_to_replace):
     df.drop(columns=['ingredients_temp'], inplace=True)
     df['ingredients'] = df['ingredients'].apply(lambda x: ', '.join(x))
     df['ingredients'] = df['ingredients'].replace("", np.nan) 
-    df['ingredients'] = df['ingredients'].replace(values_to_replace, np.nan) 
+    df['ingredients'] = df['ingredients'].replace(values_to_replace, 'empty') 
     return df
 
 def packaging_processing(df, values_to_replace): 
-    df['packaging'] = df['packaging'].replace("", np.nan)
     def remove_two_letters_and_colon(s):
         if isinstance(s, str):
             return re.sub(r'\b\w{2}:\b', '', s)
@@ -2240,7 +2240,7 @@ def packaging_processing(df, values_to_replace):
     df['packaging'] = df['packaging'].apply(remove_two_letters_and_colon)
     df['packaging'] = df['packaging'].astype(str)
     df['packaging'] = df['packaging'].str.lower()
-    df['packaging'] = df['packaging'].replace(values_to_replace, np.nan) 
+    df['packaging'] = df['packaging'].replace(values_to_replace, 'empty') 
     return df
 
 def categories_processing(df, values_to_replace): 
@@ -2255,7 +2255,7 @@ def categories_processing(df, values_to_replace):
     df.drop(columns=['categories_temp'], inplace=True)
     df['categories'] = df['categories'].apply(lambda x: ', '.join(x))
     df['categories'] = df['categories'].replace("", np.nan)
-    df['categories'] = df['categories'].replace(values_to_replace, np.nan) 
+    df['categories'] = df['categories'].replace(values_to_replace, 'empty') 
     return df
 
 def delete_useless_lines(df, values_to_replace):
@@ -2304,7 +2304,8 @@ def main(chunk_size, file_id, data_path):
                          "", 
                          "not-applicable",
                          "nan",
-                         "NaN", 
+                         "NaN",
+                         "0", 
                          np.nan]
     print("estimating necessary chunk number")
     estimated_chunks = count_chunks(jsonl_02, chunk_size)
