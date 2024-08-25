@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import os
+from sklearn.preprocessing import MinMaxScaler
 import warnings
 import json
 import re
@@ -1964,8 +1965,13 @@ def labels_processing(df, values_to_replace):
     return df
 
 def ecoscore_tags_processing(df, values_to_replace): 
-    df['ecoscore_tags'] = df['ecoscore_tags'].apply(lambda x: ', '.join(x) if isinstance(x, list) else x) # conversion liste vers string 
     df['ecoscore_tags'] = df['ecoscore_tags'].replace(values_to_replace, np.nan)
+    ecoscore_grad_map = {'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4}
+    df['ecoscore_tags'] = df['ecoscore_tags'].apply(lambda x: ', '.join(x) if isinstance(x, list) else x)
+    df['ecoscore_tags'] = df['ecoscore_tags'].replace(ecoscore_grad_map, regex=True)
+    df['ecoscore_tags'] = pd.to_numeric(df['ecoscore_tags'], errors='coerce')
+    scaler = MinMaxScaler()
+    df['ecoscore_tags'] = scaler.fit_transform(df[['ecoscore_tags']])
     return df
 
 def ecoscore_score_processing(df, values_to_replace): 
@@ -2040,16 +2046,16 @@ def delete_useless_lines(df, values_to_replace):
 def process_chunk(chunk, values_to_replace):
     df = chunk.copy()
     rename_columns_processing(df)
-    groups_processing(df, values_to_replace)
-    ingredients_processing(df, values_to_replace)
-    packaging_processing(df, values_to_replace)
+    #groups_processing(df, values_to_replace)
+    #ingredients_processing(df, values_to_replace)
+    #packaging_processing(df, values_to_replace)
     ecoscore_tags_processing(df, values_to_replace)
-    categories_processing(df, values_to_replace)
+    #categories_processing(df, values_to_replace)
     #code_processing(df, values_to_replace)
-    name_processing(df, values_to_replace)
-    ecoscore_score_processing(df, values_to_replace)
-    countries_processing(df, values_to_replace)
-    labels_processing(df, values_to_replace)
+    #name_processing(df, values_to_replace)
+    #ecoscore_score_processing(df, values_to_replace)
+    #countries_processing(df, values_to_replace)
+    #labels_processing(df, values_to_replace)
     delete_useless_lines(df, values_to_replace)
     return df
 
