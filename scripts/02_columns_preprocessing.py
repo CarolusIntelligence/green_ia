@@ -2136,6 +2136,10 @@ def countries_processing(df, values_to_replace):
     df['countries'] = df['countries'].apply(replace_rare_countries)
     df['countries'] = df['countries'].apply(lambda x: 'world' if ',' in x else x)
     df['countries'] = df['countries'].replace(values_to_replace, np.nan)
+    country_to_id = {entry["country"]: entry["id"] for entry in countries_to_num}
+    df['countries'] = df['countries'].map(country_to_id).fillna(np.nan)
+    scaler = MinMaxScaler()
+    df['countries'] = scaler.fit_transform(df[['countries']])
     return df
 
 def labels_processing(df, values_to_replace): 
