@@ -97,7 +97,7 @@ def validation(total_iter, ok_iter, ko_iter, valid_ko_iter, test_ko_iter, train_
         ok_check = False 
     return ok_check, ko_check, count_check
 
-def line_repartitor(jsonl_04, train, test, valid, train_nb_line_ko, train_nb_line_ok, test_nb_line_ko, test_nb_line_ok, valid_nb_line_ko, valid_nb_line_ok):
+def line_repartitor(jsonl_04, train, test, valid, train_nb_line_ko, train_nb_line_ok, test_nb_line_ko, test_nb_line_ok, valid_nb_line_ko, valid_nb_line_ok, median):
     with jsonlines.open(train, mode='w') as train_writer, \
         jsonlines.open(test, mode='w') as test_writer, \
         jsonlines.open(valid, mode='w') as valid_writer:
@@ -106,8 +106,8 @@ def line_repartitor(jsonl_04, train, test, valid, train_nb_line_ko, train_nb_lin
         valid_ok_iter, valid_ko_iter = 0, 0
         total_iter, ok_iter, ko_iter = 0, 0, 0
         with jsonlines.open(jsonl_04, mode='r') as reader:
+            print(median)
             for obj in reader:
-                #ecoscore_score = obj.get('ecoscore_score', float('inf'))
                 ecoscore_score = obj.get('ecoscore_score', float('nan'))
                 total_iter+=1
                 if (ecoscore_score is np.nan or ecoscore_score is None):
@@ -115,9 +115,11 @@ def line_repartitor(jsonl_04, train, test, valid, train_nb_line_ko, train_nb_lin
                         valid_writer.write(obj)
                         valid_ko_iter+=1
                     elif (test_ko_iter < test_nb_line_ko):
+                        obj['ecoscore_score'] = median
                         test_writer.write(obj)
                         test_ko_iter+=1
                     elif (train_ko_iter < train_nb_line_ko):
+                        obj['ecoscore_score'] = median
                         train_writer.write(obj)
                         train_ko_iter+=1    
                     ko_iter+=1
@@ -160,7 +162,7 @@ def shuffle_jsonl(jsonl_02, jsonl_04, chunk_size):
         f.writelines(lines)
     os.remove(temp_file)
 
-def split_jsonl_file(jsonl_04, train, test, valid, jsonl_05, chunk_size):
+def split_jsonl_file(jsonl_04, train, test, valid, jsonl_05, chunk_size, median):
     shuffle_jsonl(jsonl_04, jsonl_05, chunk_size) # mélanger toutes les lignes aléatoirement dans jsonl_02
     valid_ecoscore_count = line_count(jsonl_05, type = 2) # compter le nombre de lignes avec écoscore 
     invalid_ecoscore_count = line_count(jsonl_05, type = 0) # compter le nombre de lignes autres (sans écoscore)
@@ -173,7 +175,15 @@ def split_jsonl_file(jsonl_04, train, test, valid, jsonl_05, chunk_size):
     valid_nb_line_ko = math.floor((invalid_ecoscore_count * 0) / 100) # valid ecoscore ko
     valid_nb_line_ok = math.floor((valid_ecoscore_count * 5) / 100) # valid ecoscore ok 
     # répartir les lignes entre les fichiers
-    line_repartitor(jsonl_05, train, test, valid, train_nb_line_ko, train_nb_line_ok, test_nb_line_ko, test_nb_line_ok, valid_nb_line_ko, valid_nb_line_ok)
+    line_repartitor(jsonl_05, train, test, valid, train_nb_line_ko, train_nb_line_ok, test_nb_line_ko, test_nb_line_ok, valid_nb_line_ko, valid_nb_line_ok, median)
+
+def ecoscore_grad_median(jsonl_file, chunk_size):
+    values = []
+    for chunk in pd.read_json(jsonl_file, lines=True, chunksize=chunk_size):
+        values.extend(chunk['ecoscore_score'].dropna().tolist())
+    values = np.array(values)
+    median = np.median(values)
+    return median
 
 
 
@@ -187,10 +197,12 @@ def main(chunk_size, file_id, data_path):
     train = data_path + file_id + "_train" + ".jsonl"
     test = data_path + file_id + "_test" + ".jsonl"
     valid = data_path + file_id + "_valid" + ".jsonl"
+    median = ecoscore_grad_median(jsonl_04, chunk_size)
+    print(f"ecoscore score median: {median}")
     print("start spliting dataset")
-    split_jsonl_file(jsonl_04, train, test, valid, jsonl_05, chunk_size)
-    print("deleting file jsonl 03")
-    delete_file(jsonl_04)
+    split_jsonl_file(jsonl_04, train, test, valid, jsonl_05, chunk_size, median)
+    #print("deleting file jsonl 04")
+    #delete_file(jsonl_04)
 
 if __name__ == "__main__":
     chunk_size = sys.argv[1]

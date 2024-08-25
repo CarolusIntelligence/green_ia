@@ -20,12 +20,12 @@ data_path="${data_path}${file_id}_data/"
   #python 00_collect_data.py "$download_url" "$file_id" "$data_path" "$chunk_size"
   #echo "exec 01_keep_usefull_columns.py"
   #python 01_keep_usefull_columns.py "$chunk_size" "$file_id" "$data_path"
-  echo "exec 02_columns_preprocessing.py"
-  python 02_columns_preprocessing.py "$chunk_size" "$file_id" "$data_path" "$scripts_path"
+  #echo "exec 02_columns_preprocessing.py"
+  #python 02_columns_preprocessing.py "$chunk_size" "$file_id" "$data_path" "$scripts_path"
   #echo "exec 03_nlp_processing.py"
   #python 03_nlp_processing.py "$file_id" "$data_path" "$chunk_size"
-  #echo "exec 04_split_dataset.py"
-  #python 04_split_dataset.py "$chunk_size" "$file_id" "$data_path"
+  echo "exec 04_split_dataset.py"
+  python 04_split_dataset.py "$chunk_size" "$file_id" "$data_path"
 } #>> "$log_file" 2>&1
 
 end_time=$(date "+%Y-%m-%d %H:%M:%S")
