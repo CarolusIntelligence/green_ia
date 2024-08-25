@@ -2004,8 +2004,9 @@ def groups_processing(df, values_to_replace):
     return df
 
 def name_processing(df, values_to_replace): 
-    df['name'] = df['name'].replace(values_to_replace, np.nan) 
-    df['name'] = df['name'].str.lower()
+    df['name'] = df['name'].astype(str)
+    df.loc[:, 'name'] = df['name'].str.lower()
+    df = df[df['name'] != ''].copy()  
     return df
 
 def code_processing(df, values_to_replace): 
@@ -2056,7 +2057,7 @@ def categories_processing(df, values_to_replace):
     return df
 
 def delete_useless_lines(df, values_to_replace):
-    df = df[~df['name'].isin(values_to_replace)]
+    df = df[~df['name'].isin(values_to_replace) & df['name'].notna()]
     return df
 
 def process_chunk(chunk, values_to_replace):
@@ -2067,7 +2068,7 @@ def process_chunk(chunk, values_to_replace):
     packaging_processing(df, values_to_replace)
     ecoscore_tags_processing(df, values_to_replace)
     categories_processing(df, values_to_replace)
-    #code_processing(df, values_to_replace)
+        #code_processing(df, values_to_replace)
     name_processing(df, values_to_replace)
     ecoscore_score_processing(df, values_to_replace)
     countries_processing(df, values_to_replace)
@@ -2101,7 +2102,8 @@ def main(chunk_size, file_id, data_path):
                          "", 
                          "not-applicable",
                          "nan",
-                         "NaN"]
+                         "NaN", 
+                         np.nan]
     print("estimating necessary chunk number")
     estimated_chunks = count_chunks(jsonl_02, chunk_size)
     print("browse throw jsonl 02 file to process columns")

@@ -4,5 +4,5 @@
     "data_path": "/home/carolus/Documents/school/green_ia/data/",
     "scripts_path": "/home/carolus/Documents/school/green_ia/scripts/",
     "logs_path": "/home/carolus/Documents/school/green_ia/logs/",
-    "chunk_size": 1000
+    "chunk_size": 10000
 }
