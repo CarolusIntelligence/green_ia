@@ -60,7 +60,7 @@ def processing(jsonl_03, jsonl_04, chunk_size):
                     batch = []
             if batch:
                 df = pd.DataFrame(batch)
-                for column in ['packaging', 'name', 'ingredients', 'categories']:
+                for column in ['packaging', 'ingredients']:
                     if column in df.columns:
                         df[column] = df[column].astype(str).apply(clean_text)
                         df[column] = extract_keywords(df[column])
