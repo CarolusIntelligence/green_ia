@@ -1984,7 +1984,23 @@ def groups_processing(df, values_to_replace):
     df['groups'] = df['groups'].replace(values_to_replace, np.nan) 
     df['groups'] = df['groups'].astype(str)
     df['groups'] = df['groups'].str.lower() 
-    df['groups'] = df['groups'].replace(values_to_replace, np.nan)
+    ecoscore_grad_map = {'sugary snacks': 0,
+                        'fat and sauces': 1,
+                        'composite foods': 2,
+                            'fruits and vegetables': 3,
+                            'milk and dairy products': 4, 
+                            'cereals and potatoes': 5, 
+                            'fish meat eggs': 6, 
+                            'beverages': 7, 
+                            'alcoholic beverages': 8, 
+                            'salty snacks': 9, 
+                            'sugary-snacks': 10}
+    df['groups'] = df['groups'].apply(lambda x: ', '.join(x) if isinstance(x, list) else x)
+    df['groups'] = df['groups'].replace(ecoscore_grad_map, regex=True)
+    df['groups'] = pd.to_numeric(df['groups'], errors='coerce')
+    scaler = MinMaxScaler()
+    df['groups'] = scaler.fit_transform(df[['groups']])
+    df['groups'] = df['groups'].replace(values_to_replace, np.nan) 
     return df
 
 def name_processing(df, values_to_replace): 
