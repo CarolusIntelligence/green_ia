@@ -34,4 +34,4 @@ duration=$((end_seconds - start_seconds))
 {
   echo "end: $end_time"
   echo "total execution time: $((duration / 60)) minutes $((duration % 60)) seconds"
-} >> "$log_file"
+} #>> "$log_file"
