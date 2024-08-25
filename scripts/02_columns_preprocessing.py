@@ -1937,6 +1937,7 @@ def countries_processing(df, values_to_replace):
             return ', '.join(filter(lambda x: x is not np.nan, updated_countries)) if updated_countries else np.nan
         return np.nan
     df['countries'] = df['countries'].apply(replace_rare_countries)
+    df['countries'] = df['countries'].apply(lambda x: 'world' if ',' in x else x)
     df['countries'] = df['countries'].replace(values_to_replace, np.nan)
     return df
 
@@ -2063,16 +2064,16 @@ def delete_useless_lines(df, values_to_replace):
 def process_chunk(chunk, values_to_replace):
     df = chunk.copy()
     rename_columns_processing(df)
-    groups_processing(df, values_to_replace)
-    ingredients_processing(df, values_to_replace)
-    packaging_processing(df, values_to_replace)
-    ecoscore_tags_processing(df, values_to_replace)
-    categories_processing(df, values_to_replace)
+    #groups_processing(df, values_to_replace)
+    #ingredients_processing(df, values_to_replace)
+    #packaging_processing(df, values_to_replace)
+    #ecoscore_tags_processing(df, values_to_replace)
+    #categories_processing(df, values_to_replace)
         #code_processing(df, values_to_replace)
-    name_processing(df, values_to_replace)
-    ecoscore_score_processing(df, values_to_replace)
+    #name_processing(df, values_to_replace)
+    #ecoscore_score_processing(df, values_to_replace)
     countries_processing(df, values_to_replace)
-    labels_processing(df, values_to_replace)
+    #labels_processing(df, values_to_replace)
     delete_useless_lines(df, values_to_replace)
     return df
 
