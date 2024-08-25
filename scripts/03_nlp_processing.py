@@ -36,6 +36,7 @@ def extract_keywords(text_series):
     for row in dense_matrix:
         word_scores = {word: score for word, score in zip(feature_names, row) if score > 0}
         sorted_words = sorted(word_scores.items(), key=lambda x: x[1], reverse=True)
+        # Join words with a space in between
         keywords.append(' '.join([word for word, score in sorted_words]))
     return keywords
 
@@ -64,8 +65,6 @@ def processing(jsonl_03, jsonl_04, chunk_size):
                         df[column] = df[column].astype(str).apply(clean_text)
                         df[column] = extract_keywords(df[column])
                 df.to_json(outfile, orient='records', lines=True)
-
-
 
 ###############################################################################
 # MAIN ########################################################################

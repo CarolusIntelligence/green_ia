@@ -1960,6 +1960,7 @@ def labels_processing(df, values_to_replace):
     df.drop(columns=['labels'], inplace=True)
     # ramène toutes les notes > 9 à 9
     df['labels_note'] = df['labels_note'].apply(lambda x: min(x, 9) if pd.notna(x) else x)
+    df['labels_note'] = df['labels_note'].apply(lambda x: (x - 0) / (9 - 0) if pd.notna(x) else x)
     return df
 
 def ecoscore_tags_processing(df, values_to_replace): 
@@ -2039,15 +2040,15 @@ def delete_useless_lines(df, values_to_replace):
 def process_chunk(chunk, values_to_replace):
     df = chunk.copy()
     rename_columns_processing(df)
-    groups_processing(df, values_to_replace)
-    ingredients_processing(df, values_to_replace)
-    packaging_processing(df, values_to_replace)
-    ecoscore_tags_processing(df, values_to_replace)
-    categories_processing(df, values_to_replace)
-    code_processing(df, values_to_replace)
-    name_processing(df, values_to_replace)
-    ecoscore_score_processing(df, values_to_replace)
-    countries_processing(df, values_to_replace)
+    #groups_processing(df, values_to_replace)
+    #ingredients_processing(df, values_to_replace)
+    #packaging_processing(df, values_to_replace)
+    #ecoscore_tags_processing(df, values_to_replace)
+    #categories_processing(df, values_to_replace)
+    #code_processing(df, values_to_replace)
+    #name_processing(df, values_to_replace)
+    #ecoscore_score_processing(df, values_to_replace)
+    #countries_processing(df, values_to_replace)
     labels_processing(df, values_to_replace)
     delete_useless_lines(df, values_to_replace)
     return df
