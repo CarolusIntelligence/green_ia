@@ -11,7 +11,6 @@ pd.set_option('display.max_rows', 100)
 warnings.filterwarnings("ignore", category=pd.errors.DtypeWarning)
 pd.set_option('future.no_silent_downcasting', True)
 
-
 def count_chunks(jsonl_02, chunk_size):
     with open(jsonl_02, 'r') as file:
         line_count = sum(1 for _ in file)
