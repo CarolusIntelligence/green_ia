@@ -69,11 +69,17 @@ def main(chunk_size, file_id, data_path):
     test = data_path + file_id + "_test" + ".jsonl"
     valid = data_path + file_id + "_valid" + ".jsonl"
 
-    print("creating tensor")
+    print("creating tensor train")
     for chunk in read_jsonl_in_chunks(train, chunk_size):
-        x, y = data_to_tensor(chunk)
-        print('tensor x :', x)
-        print('tensor y :', y)
+        x_train, y_train = data_to_tensor(chunk)
+        print('train tensor x :', x_train)
+        print('train tensor y :', y_train)
+
+    print("creating tensor test")
+    for chunk in read_jsonl_in_chunks(test, chunk_size):
+        x_test, y_test = data_to_tensor(chunk)
+        print('test tensor x:', x_test)
+        print('test tensor y:', y_test)
 
 
 if __name__ == "__main__":
