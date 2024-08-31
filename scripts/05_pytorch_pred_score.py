@@ -22,7 +22,7 @@ vectorizer_categories = CountVectorizer()
 
 # pre-ajustement vectorizers sur echantillon de donnees
 def fit_vectorizers(data_path, file_id, chunk_size):
-    first_chunk = next(read_jsonl_in_chunks(data_path + file_id + "_train.jsonl", chunk_size))
+    first_chunk = next(read_jsonl_in_chunks(data_path + file_id + "_train_01.jsonl", chunk_size))
     vectorizer_packaging.fit(first_chunk['packaging'].astype(str))
     vectorizer_name.fit(first_chunk['name'].astype(str))
     vectorizer_ingredients.fit(first_chunk['ingredients'].astype(str))
@@ -130,7 +130,7 @@ def main(chunk_size, file_id, data_path):
     batch_size = 64
 
     fit_vectorizers(data_path, file_id, chunk_size)
-    first_chunk = next(read_jsonl_in_chunks(data_path + file_id + "_train.jsonl", chunk_size))
+    first_chunk = next(read_jsonl_in_chunks(data_path + file_id + "_train_01.jsonl", chunk_size))
     x_sample, _ = data_to_tensor(first_chunk)
     input_size = x_sample.shape[1]  
     model = ComplexNN(input_size) 

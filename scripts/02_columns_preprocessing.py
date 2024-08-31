@@ -2166,13 +2166,9 @@ def labels_processing(df, values_to_replace):
     return df
 
 def ecoscore_tags_processing(df, values_to_replace): 
-    df['ecoscore_tags'] = df['ecoscore_tags'].replace(values_to_replace, np.nan)
-    ecoscore_grad_map = {'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4}
+    df['ecoscore_tags'] = df['ecoscore_tags'].replace(values_to_replace, 'empty')
     df['ecoscore_tags'] = df['ecoscore_tags'].apply(lambda x: ', '.join(x) if isinstance(x, list) else x)
-    df['ecoscore_tags'] = df['ecoscore_tags'].replace(ecoscore_grad_map, regex=True)
-    df['ecoscore_tags'] = pd.to_numeric(df['ecoscore_tags'], errors='coerce')
-    scaler = MinMaxScaler()
-    df['ecoscore_tags'] = scaler.fit_transform(df[['ecoscore_tags']])
+    df['ecoscore_tags'] = df['ecoscore_tags'].replace('unknown', 'empty')
     return df
 
 def ecoscore_score_processing(df, values_to_replace): 
@@ -2215,6 +2211,10 @@ def code_processing(df, values_to_replace):
     df['code'] = df['code'].replace(values_to_replace, np.nan) 
     df['code'] = pd.to_numeric(df['code'], errors='coerce')
     df['code'] = df['code'].apply(lambda x: np.nan if pd.isna(x) else int(round(x)))
+    return df
+
+def create_new_col(df): 
+    df['type'] = pd.NA
     return df
 
 def ingredients_processing(df, values_to_replace): 
