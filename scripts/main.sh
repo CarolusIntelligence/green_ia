@@ -22,10 +22,9 @@ best_model_path=$(jq -r '.best_model_path' config.json)
 
 data_path="${data_path}${file_id}_data/"
 best_model_path="${best_model_path}${file_id}_${MAX_SEQ_LEN}_${batch_size}_${embed_dim}_${hidden_dim}_${lr}.ci"
-echo $best_model_path
 
 {
-  echo "exec 00_collect_data.py"
+  #echo "exec 00_collect_data.py"
   #python 00_collect_data.py "$download_url" "$file_id" "$data_path" "$chunk_size"
   #echo "exec 01_keep_usefull_columns.py"
   #python 01_keep_usefull_columns.py "$chunk_size" "$file_id" "$data_path"
@@ -35,9 +34,8 @@ echo $best_model_path
   #python 03_split_dataset.py "$chunk_size" "$file_id" "$data_path"
   #echo "exec 04_norm_impuNaN.py"
   #python 04_norm_impuNaN.py "$chunk_size" "$file_id" "$data_path"
-  #echo "exec 05_pytorch_pred_score.py"
-  #python 05_pytorch_pred_score.py "$chunk_size" "$file_id" "$data_path"
-  #python 05_pytorch_pred_score.py 
+  echo "exec 05_pytorch_pred_score.py"
+  python 05_pytorch_pred_score.py "$chunk_size" "$file_id" "$data_path" "$MAX_SEQ_LEN" "$batch_size" "$embed_dim" "$hidden_dim" "$lr" "$patience" "$best_model_path" 
 } #>> "$log_file" 2>&1
 
 end_time=$(date "+%Y-%m-%d %H:%M:%S")
