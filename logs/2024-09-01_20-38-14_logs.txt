@@ -1,0 +1,369 @@
+begin: 2024-09-01_20-38-14
+exec 05_pytorch_pred_score.py
+model data = 10000, 174, /home/carolus/Documents/school/green_ia/data/174_data/, 200, 64, 50, 128, 0.001, 5, ../best_models/174_200_64_50_128_0.001.ci
+epoch 1/100
+train loss: 45.2383, train RMSE: 6.7259, train R2: 0.6906, train MAE: 3.7062
+test loss: 22.5505, test RMSE: 4.7487, test R2: 0.8074, test MAE: 2.1164
+model improved and saved at epoch 1
+epoch 2/100
+train loss: 24.1156, train RMSE: 4.9108, train R2: 0.8351, train MAE: 2.3690
+test loss: 18.8889, test RMSE: 4.3461, test R2: 0.8387, test MAE: 1.9941
+model improved and saved at epoch 2
+epoch 3/100
+train loss: 20.5660, train RMSE: 4.5350, train R2: 0.8593, train MAE: 2.1094
+test loss: 18.4201, test RMSE: 4.2919, test R2: 0.8427, test MAE: 1.7174
+model improved and saved at epoch 3
+epoch 4/100
+train loss: 18.5312, train RMSE: 4.3048, train R2: 0.8733, train MAE: 1.9667
+test loss: 17.3379, test RMSE: 4.1639, test R2: 0.8519, test MAE: 1.8167
+model improved and saved at epoch 4
+epoch 5/100
+train loss: 16.9138, train RMSE: 4.1126, train R2: 0.8843, train MAE: 1.8486
+test loss: 14.2569, test RMSE: 3.7758, test R2: 0.8782, test MAE: 1.4570
+model improved and saved at epoch 5
+epoch 6/100
+train loss: 15.6693, train RMSE: 3.9584, train R2: 0.8928, train MAE: 1.7538
+test loss: 13.9353, test RMSE: 3.7330, test R2: 0.8810, test MAE: 1.4863
+model improved and saved at epoch 6
+epoch 7/100
+train loss: 14.7787, train RMSE: 3.8443, train R2: 0.8989, train MAE: 1.6827
+test loss: 13.8046, test RMSE: 3.7155, test R2: 0.8821, test MAE: 1.4415
+model improved and saved at epoch 7
+epoch 8/100
+train loss: 13.9398, train RMSE: 3.7336, train R2: 0.9047, train MAE: 1.6091
+test loss: 13.3004, test RMSE: 3.6470, test R2: 0.8864, test MAE: 1.6151
+model improved and saved at epoch 8
+epoch 9/100
+train loss: 13.3430, train RMSE: 3.6528, train R2: 0.9087, train MAE: 1.5572
+test loss: 12.6176, test RMSE: 3.5521, test R2: 0.8922, test MAE: 1.3157
+model improved and saved at epoch 9
+epoch 10/100
+train loss: 12.8350, train RMSE: 3.5826, train R2: 0.9122, train MAE: 1.5088
+test loss: 13.3030, test RMSE: 3.6473, test R2: 0.8864, test MAE: 1.7792
+no improvement in test loss for 1 epoch
+epoch 11/100
+train loss: 12.3851, train RMSE: 3.5193, train R2: 0.9153, train MAE: 1.4686
+test loss: 11.7531, test RMSE: 3.4283, test R2: 0.8996, test MAE: 1.2182
+model improved and saved at epoch 11
+epoch 12/100
+train loss: 11.9919, train RMSE: 3.4629, train R2: 0.9180, train MAE: 1.4304
+test loss: 11.2849, test RMSE: 3.3593, test R2: 0.9036, test MAE: 1.1928
+model improved and saved at epoch 12
+epoch 13/100
+train loss: 11.6059, train RMSE: 3.4067, train R2: 0.9206, train MAE: 1.3916
+test loss: 10.8715, test RMSE: 3.2972, test R2: 0.9071, test MAE: 1.1293
+model improved and saved at epoch 13
+epoch 14/100
+train loss: 11.2990, train RMSE: 3.3614, train R2: 0.9227, train MAE: 1.3633
+test loss: 10.8144, test RMSE: 3.2885, test R2: 0.9076, test MAE: 1.3941
+model improved and saved at epoch 14
+epoch 15/100
+train loss: 10.9494, train RMSE: 3.3090, train R2: 0.9251, train MAE: 1.3268
+test loss: 10.5661, test RMSE: 3.2505, test R2: 0.9098, test MAE: 1.1921
+model improved and saved at epoch 15
+epoch 16/100
+train loss: 10.6897, train RMSE: 3.2695, train R2: 0.9269, train MAE: 1.3017
+test loss: 10.8235, test RMSE: 3.2899, test R2: 0.9076, test MAE: 1.1657
+no improvement in test loss for 1 epoch
+epoch 17/100
+train loss: 10.4512, train RMSE: 3.2328, train R2: 0.9285, train MAE: 1.2788
+test loss: 10.3859, test RMSE: 3.2227, test R2: 0.9113, test MAE: 1.1658
+model improved and saved at epoch 17
+epoch 18/100
+train loss: 10.2050, train RMSE: 3.1945, train R2: 0.9302, train MAE: 1.2560
+test loss: 11.4686, test RMSE: 3.3865, test R2: 0.9020, test MAE: 1.5063
+no improvement in test loss for 1 epoch
+epoch 19/100
+train loss: 9.9974, train RMSE: 3.1619, train R2: 0.9316, train MAE: 1.2401
+test loss: 9.9261, test RMSE: 3.1506, test R2: 0.9152, test MAE: 1.0344
+model improved and saved at epoch 19
+epoch 20/100
+train loss: 9.7574, train RMSE: 3.1237, train R2: 0.9333, train MAE: 1.2157
+test loss: 12.9684, test RMSE: 3.6012, test R2: 0.8892, test MAE: 1.5750
+no improvement in test loss for 1 epoch
+epoch 21/100
+train loss: 9.5698, train RMSE: 3.0935, train R2: 0.9346, train MAE: 1.1938
+test loss: 9.7054, test RMSE: 3.1154, test R2: 0.9171, test MAE: 0.9836
+model improved and saved at epoch 21
+epoch 22/100
+train loss: 9.3848, train RMSE: 3.0635, train R2: 0.9358, train MAE: 1.1811
+test loss: 10.4723, test RMSE: 3.2361, test R2: 0.9106, test MAE: 1.1093
+no improvement in test loss for 1 epoch
+epoch 23/100
+train loss: 9.2029, train RMSE: 3.0336, train R2: 0.9371, train MAE: 1.1660
+test loss: 9.4066, test RMSE: 3.0670, test R2: 0.9197, test MAE: 1.0770
+model improved and saved at epoch 23
+epoch 24/100
+train loss: 9.0272, train RMSE: 3.0045, train R2: 0.9383, train MAE: 1.1471
+test loss: 9.7890, test RMSE: 3.1287, test R2: 0.9164, test MAE: 1.0131
+no improvement in test loss for 1 epoch
+epoch 25/100
+train loss: 8.8670, train RMSE: 2.9778, train R2: 0.9394, train MAE: 1.1360
+test loss: 9.4743, test RMSE: 3.0780, test R2: 0.9191, test MAE: 1.0752
+no improvement in test loss for 2 epoch
+epoch 26/100
+train loss: 8.7078, train RMSE: 2.9509, train R2: 0.9404, train MAE: 1.1187
+test loss: 9.5133, test RMSE: 3.0844, test R2: 0.9187, test MAE: 1.1694
+no improvement in test loss for 3 epoch
+epoch 27/100
+train loss: 8.5778, train RMSE: 2.9288, train R2: 0.9413, train MAE: 1.1068
+test loss: 9.7379, test RMSE: 3.1206, test R2: 0.9168, test MAE: 1.0784
+no improvement in test loss for 4 epoch
+epoch 28/100
+train loss: 8.4417, train RMSE: 2.9055, train R2: 0.9423, train MAE: 1.0950
+test loss: 9.5751, test RMSE: 3.0944, test R2: 0.9182, test MAE: 1.2045
+no improvement in test loss for 5 epoch
+early stopping
+best model loaded for evaluation
+starting retraining on sampled validation data...
+epoch 1/100 (validation retrain)
+valid loss: 42.5058, valid RMSE: 6.5196, valid R2: 0.9315, valid MAE: 4.2819
+epoch 2/100 (validation retrain)
+valid loss: 40.8750, valid RMSE: 6.3934, valid R2: 0.9341, valid MAE: 4.2138
+epoch 3/100 (validation retrain)
+valid loss: 38.3479, valid RMSE: 6.1926, valid R2: 0.9382, valid MAE: 4.1101
+epoch 4/100 (validation retrain)
+valid loss: 35.4939, valid RMSE: 5.9577, valid R2: 0.9428, valid MAE: 3.9780
+epoch 5/100 (validation retrain)
+valid loss: 32.4861, valid RMSE: 5.6997, valid R2: 0.9476, valid MAE: 3.8321
+epoch 6/100 (validation retrain)
+valid loss: 29.7493, valid RMSE: 5.4543, valid R2: 0.9520, valid MAE: 3.6885
+epoch 7/100 (validation retrain)
+valid loss: 27.1615, valid RMSE: 5.2117, valid R2: 0.9562, valid MAE: 3.5479
+epoch 8/100 (validation retrain)
+valid loss: 24.8762, valid RMSE: 4.9876, valid R2: 0.9599, valid MAE: 3.4318
+epoch 9/100 (validation retrain)
+valid loss: 22.6981, valid RMSE: 4.7643, valid R2: 0.9634, valid MAE: 3.3144
+epoch 10/100 (validation retrain)
+valid loss: 20.6190, valid RMSE: 4.5408, valid R2: 0.9668, valid MAE: 3.1944
+epoch 11/100 (validation retrain)
+valid loss: 18.6840, valid RMSE: 4.3225, valid R2: 0.9699, valid MAE: 3.0544
+epoch 12/100 (validation retrain)
+valid loss: 16.9526, valid RMSE: 4.1173, valid R2: 0.9727, valid MAE: 2.9017
+epoch 13/100 (validation retrain)
+valid loss: 15.4135, valid RMSE: 3.9260, valid R2: 0.9752, valid MAE: 2.7642
+epoch 14/100 (validation retrain)
+valid loss: 14.0893, valid RMSE: 3.7536, valid R2: 0.9773, valid MAE: 2.6339
+epoch 15/100 (validation retrain)
+valid loss: 12.9234, valid RMSE: 3.5949, valid R2: 0.9792, valid MAE: 2.5227
+epoch 16/100 (validation retrain)
+valid loss: 11.9166, valid RMSE: 3.4520, valid R2: 0.9808, valid MAE: 2.4257
+epoch 17/100 (validation retrain)
+valid loss: 11.0538, valid RMSE: 3.3247, valid R2: 0.9822, valid MAE: 2.3422
+epoch 18/100 (validation retrain)
+valid loss: 10.2824, valid RMSE: 3.2066, valid R2: 0.9834, valid MAE: 2.2565
+epoch 19/100 (validation retrain)
+valid loss: 9.5519, valid RMSE: 3.0906, valid R2: 0.9846, valid MAE: 2.1536
+epoch 20/100 (validation retrain)
+valid loss: 8.7960, valid RMSE: 2.9658, valid R2: 0.9858, valid MAE: 2.0395
+epoch 21/100 (validation retrain)
+valid loss: 8.0766, valid RMSE: 2.8419, valid R2: 0.9870, valid MAE: 1.9188
+epoch 22/100 (validation retrain)
+valid loss: 7.4492, valid RMSE: 2.7293, valid R2: 0.9880, valid MAE: 1.8037
+epoch 23/100 (validation retrain)
+valid loss: 6.9651, valid RMSE: 2.6391, valid R2: 0.9888, valid MAE: 1.7349
+epoch 24/100 (validation retrain)
+valid loss: 6.5861, valid RMSE: 2.5663, valid R2: 0.9894, valid MAE: 1.6948
+epoch 25/100 (validation retrain)
+valid loss: 6.2555, valid RMSE: 2.5011, valid R2: 0.9899, valid MAE: 1.6679
+epoch 26/100 (validation retrain)
+valid loss: 5.9391, valid RMSE: 2.4370, valid R2: 0.9904, valid MAE: 1.6302
+epoch 27/100 (validation retrain)
+valid loss: 5.6295, valid RMSE: 2.3727, valid R2: 0.9909, valid MAE: 1.5851
+epoch 28/100 (validation retrain)
+valid loss: 5.3396, valid RMSE: 2.3107, valid R2: 0.9914, valid MAE: 1.5274
+epoch 29/100 (validation retrain)
+valid loss: 5.0752, valid RMSE: 2.2528, valid R2: 0.9918, valid MAE: 1.4707
+epoch 30/100 (validation retrain)
+valid loss: 4.8407, valid RMSE: 2.2001, valid R2: 0.9922, valid MAE: 1.4287
+epoch 31/100 (validation retrain)
+valid loss: 4.6272, valid RMSE: 2.1511, valid R2: 0.9925, valid MAE: 1.3890
+epoch 32/100 (validation retrain)
+valid loss: 4.4233, valid RMSE: 2.1032, valid R2: 0.9929, valid MAE: 1.3542
+epoch 33/100 (validation retrain)
+valid loss: 4.2320, valid RMSE: 2.0572, valid R2: 0.9932, valid MAE: 1.3226
+epoch 34/100 (validation retrain)
+valid loss: 4.0386, valid RMSE: 2.0096, valid R2: 0.9935, valid MAE: 1.2946
+epoch 35/100 (validation retrain)
+valid loss: 3.8485, valid RMSE: 1.9618, valid R2: 0.9938, valid MAE: 1.2710
+epoch 36/100 (validation retrain)
+valid loss: 3.6706, valid RMSE: 1.9159, valid R2: 0.9941, valid MAE: 1.2496
+epoch 37/100 (validation retrain)
+valid loss: 3.5093, valid RMSE: 1.8733, valid R2: 0.9943, valid MAE: 1.2340
+epoch 38/100 (validation retrain)
+valid loss: 3.3644, valid RMSE: 1.8342, valid R2: 0.9946, valid MAE: 1.2156
+epoch 39/100 (validation retrain)
+valid loss: 3.2278, valid RMSE: 1.7966, valid R2: 0.9948, valid MAE: 1.1949
+epoch 40/100 (validation retrain)
+valid loss: 3.0938, valid RMSE: 1.7589, valid R2: 0.9950, valid MAE: 1.1676
+epoch 41/100 (validation retrain)
+valid loss: 2.9625, valid RMSE: 1.7212, valid R2: 0.9952, valid MAE: 1.1345
+epoch 42/100 (validation retrain)
+valid loss: 2.8364, valid RMSE: 1.6842, valid R2: 0.9954, valid MAE: 1.0975
+epoch 43/100 (validation retrain)
+valid loss: 2.7192, valid RMSE: 1.6490, valid R2: 0.9956, valid MAE: 1.0667
+epoch 44/100 (validation retrain)
+valid loss: 2.6120, valid RMSE: 1.6162, valid R2: 0.9958, valid MAE: 1.0368
+epoch 45/100 (validation retrain)
+valid loss: 2.5150, valid RMSE: 1.5859, valid R2: 0.9959, valid MAE: 1.0073
+epoch 46/100 (validation retrain)
+valid loss: 2.4216, valid RMSE: 1.5561, valid R2: 0.9961, valid MAE: 0.9811
+epoch 47/100 (validation retrain)
+valid loss: 2.3289, valid RMSE: 1.5261, valid R2: 0.9962, valid MAE: 0.9578
+epoch 48/100 (validation retrain)
+valid loss: 2.2368, valid RMSE: 1.4956, valid R2: 0.9964, valid MAE: 0.9348
+epoch 49/100 (validation retrain)
+valid loss: 2.1466, valid RMSE: 1.4651, valid R2: 0.9965, valid MAE: 0.9109
+epoch 50/100 (validation retrain)
+valid loss: 2.0603, valid RMSE: 1.4354, valid R2: 0.9967, valid MAE: 0.8910
+epoch 51/100 (validation retrain)
+valid loss: 1.9789, valid RMSE: 1.4067, valid R2: 0.9968, valid MAE: 0.8716
+epoch 52/100 (validation retrain)
+valid loss: 1.9030, valid RMSE: 1.3795, valid R2: 0.9969, valid MAE: 0.8508
+epoch 53/100 (validation retrain)
+valid loss: 1.8302, valid RMSE: 1.3528, valid R2: 0.9970, valid MAE: 0.8299
+epoch 54/100 (validation retrain)
+valid loss: 1.7595, valid RMSE: 1.3264, valid R2: 0.9972, valid MAE: 0.8102
+epoch 55/100 (validation retrain)
+valid loss: 1.6909, valid RMSE: 1.3003, valid R2: 0.9973, valid MAE: 0.7893
+epoch 56/100 (validation retrain)
+valid loss: 1.6249, valid RMSE: 1.2747, valid R2: 0.9974, valid MAE: 0.7690
+epoch 57/100 (validation retrain)
+valid loss: 1.5631, valid RMSE: 1.2502, valid R2: 0.9975, valid MAE: 0.7510
+epoch 58/100 (validation retrain)
+valid loss: 1.5049, valid RMSE: 1.2267, valid R2: 0.9976, valid MAE: 0.7354
+epoch 59/100 (validation retrain)
+valid loss: 1.4501, valid RMSE: 1.2042, valid R2: 0.9977, valid MAE: 0.7206
+epoch 60/100 (validation retrain)
+valid loss: 1.3975, valid RMSE: 1.1821, valid R2: 0.9977, valid MAE: 0.7067
+epoch 61/100 (validation retrain)
+valid loss: 1.3463, valid RMSE: 1.1603, valid R2: 0.9978, valid MAE: 0.6932
+epoch 62/100 (validation retrain)
+valid loss: 1.2968, valid RMSE: 1.1388, valid R2: 0.9979, valid MAE: 0.6803
+epoch 63/100 (validation retrain)
+valid loss: 1.2500, valid RMSE: 1.1180, valid R2: 0.9980, valid MAE: 0.6675
+epoch 64/100 (validation retrain)
+valid loss: 1.2049, valid RMSE: 1.0977, valid R2: 0.9981, valid MAE: 0.6546
+epoch 65/100 (validation retrain)
+valid loss: 1.1619, valid RMSE: 1.0779, valid R2: 0.9981, valid MAE: 0.6423
+epoch 66/100 (validation retrain)
+valid loss: 1.1206, valid RMSE: 1.0586, valid R2: 0.9982, valid MAE: 0.6308
+epoch 67/100 (validation retrain)
+valid loss: 1.0812, valid RMSE: 1.0398, valid R2: 0.9983, valid MAE: 0.6194
+epoch 68/100 (validation retrain)
+valid loss: 1.0429, valid RMSE: 1.0212, valid R2: 0.9983, valid MAE: 0.6087
+epoch 69/100 (validation retrain)
+valid loss: 1.0060, valid RMSE: 1.0030, valid R2: 0.9984, valid MAE: 0.5979
+epoch 70/100 (validation retrain)
+valid loss: 0.9706, valid RMSE: 0.9852, valid R2: 0.9984, valid MAE: 0.5871
+epoch 71/100 (validation retrain)
+valid loss: 0.9375, valid RMSE: 0.9682, valid R2: 0.9985, valid MAE: 0.5767
+epoch 72/100 (validation retrain)
+valid loss: 0.9059, valid RMSE: 0.9518, valid R2: 0.9985, valid MAE: 0.5675
+epoch 73/100 (validation retrain)
+valid loss: 0.8756, valid RMSE: 0.9357, valid R2: 0.9986, valid MAE: 0.5582
+epoch 74/100 (validation retrain)
+valid loss: 0.8462, valid RMSE: 0.9199, valid R2: 0.9986, valid MAE: 0.5491
+epoch 75/100 (validation retrain)
+valid loss: 0.8184, valid RMSE: 0.9047, valid R2: 0.9987, valid MAE: 0.5399
+epoch 76/100 (validation retrain)
+valid loss: 0.7918, valid RMSE: 0.8898, valid R2: 0.9987, valid MAE: 0.5305
+epoch 77/100 (validation retrain)
+valid loss: 0.7660, valid RMSE: 0.8752, valid R2: 0.9988, valid MAE: 0.5209
+epoch 78/100 (validation retrain)
+valid loss: 0.7412, valid RMSE: 0.8609, valid R2: 0.9988, valid MAE: 0.5113
+epoch 79/100 (validation retrain)
+valid loss: 0.7175, valid RMSE: 0.8471, valid R2: 0.9988, valid MAE: 0.5021
+epoch 80/100 (validation retrain)
+valid loss: 0.6946, valid RMSE: 0.8334, valid R2: 0.9989, valid MAE: 0.4935
+epoch 81/100 (validation retrain)
+valid loss: 0.6724, valid RMSE: 0.8200, valid R2: 0.9989, valid MAE: 0.4850
+epoch 82/100 (validation retrain)
+valid loss: 0.6507, valid RMSE: 0.8067, valid R2: 0.9990, valid MAE: 0.4766
+epoch 83/100 (validation retrain)
+valid loss: 0.6305, valid RMSE: 0.7941, valid R2: 0.9990, valid MAE: 0.4685
+epoch 84/100 (validation retrain)
+valid loss: 0.6111, valid RMSE: 0.7817, valid R2: 0.9990, valid MAE: 0.4608
+epoch 85/100 (validation retrain)
+valid loss: 0.5923, valid RMSE: 0.7696, valid R2: 0.9990, valid MAE: 0.4532
+epoch 86/100 (validation retrain)
+valid loss: 0.5739, valid RMSE: 0.7576, valid R2: 0.9991, valid MAE: 0.4453
+epoch 87/100 (validation retrain)
+valid loss: 0.5564, valid RMSE: 0.7459, valid R2: 0.9991, valid MAE: 0.4373
+epoch 88/100 (validation retrain)
+valid loss: 0.5391, valid RMSE: 0.7342, valid R2: 0.9991, valid MAE: 0.4296
+epoch 89/100 (validation retrain)
+valid loss: 0.5224, valid RMSE: 0.7228, valid R2: 0.9992, valid MAE: 0.4221
+epoch 90/100 (validation retrain)
+valid loss: 0.5065, valid RMSE: 0.7117, valid R2: 0.9992, valid MAE: 0.4151
+epoch 91/100 (validation retrain)
+valid loss: 0.4912, valid RMSE: 0.7008, valid R2: 0.9992, valid MAE: 0.4085
+epoch 92/100 (validation retrain)
+valid loss: 0.4764, valid RMSE: 0.6902, valid R2: 0.9992, valid MAE: 0.4020
+epoch 93/100 (validation retrain)
+valid loss: 0.4620, valid RMSE: 0.6797, valid R2: 0.9993, valid MAE: 0.3955
+epoch 94/100 (validation retrain)
+valid loss: 0.4467, valid RMSE: 0.6684, valid R2: 0.9993, valid MAE: 0.3890
+epoch 95/100 (validation retrain)
+valid loss: 0.4276, valid RMSE: 0.6539, valid R2: 0.9993, valid MAE: 0.3830
+epoch 96/100 (validation retrain)
+valid loss: 0.4070, valid RMSE: 0.6379, valid R2: 0.9993, valid MAE: 0.3773
+epoch 97/100 (validation retrain)
+valid loss: 0.3861, valid RMSE: 0.6214, valid R2: 0.9994, valid MAE: 0.3722
+epoch 98/100 (validation retrain)
+valid loss: 0.3660, valid RMSE: 0.6050, valid R2: 0.9994, valid MAE: 0.3677
+epoch 99/100 (validation retrain)
+valid loss: 0.3468, valid RMSE: 0.5889, valid R2: 0.9994, valid MAE: 0.3631
+epoch 100/100 (validation retrain)
+valid loss: 0.3285, valid RMSE: 0.5732, valid R2: 0.9995, valid MAE: 0.3575
+generating predictions for entire validation dataset...
+Predictions saved to /home/carolus/Documents/school/green_ia/data/174_data/174_valid_with_predictions.csv
+exec 06_pytorch_validation_model.py
+moyenne_pred_valid: -0.6122959395299211
+median_pred_valid: -0.9402332305908203
+       ecoscore_score  predictions ecoscore_tags tags_pred
+0                  42    46.433197             c         c
+1                  46    48.838131             c         c
+2                  71    71.462410             b         b
+3                  79    73.772087             b         b
+4                  79    64.112686             b         b
+...               ...          ...           ...       ...
+41316              43    45.451488             c         c
+41317              92    76.611839             a         b
+41318              76    75.445137             b         b
+41319              60    62.705875             b         b
+41320              32    29.581947             d         d
+
+[41321 rows x 4 columns]
+      ecoscore_tags tags_pred
+0                 c         c
+1                 c         c
+2                 b         b
+3                 b         b
+4                 b         b
+...             ...       ...
+41316             c         c
+41317             a         b
+41318             b         b
+41319             b         b
+41320             d         d
+
+[41321 rows x 2 columns]
+lignes avec des lettres non identiques:
+      ecoscore_tags tags_pred  pourcentage_non_identiques
+15                d         c                       100.0
+16                c         b                       100.0
+24                a         b                       100.0
+28                c         b                       100.0
+41                c         d                       100.0
+...             ...       ...                         ...
+41305             b         c                       100.0
+41309             c         b                       100.0
+41312             b         c                       100.0
+41313             d         c                       100.0
+41317             a         b                       100.0
+
+[13111 rows x 3 columns]
+% non identique moyen: 31.73%
+end: 2024-09-01 21:41:07
+total execution time: 62 minutes 53 seconds
