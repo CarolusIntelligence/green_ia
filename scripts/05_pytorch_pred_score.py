@@ -185,10 +185,29 @@ def evaluate(model, dataloader, criterion, device):
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model.to(device)
-num_epochs = 10
+num_epochs = 50  
+patience = 5  
+best_loss = float('inf')
+trigger_times = 0
+best_model_path = '174_best_model.ci' # FILE ID 
+
 for epoch in range(num_epochs):
     train_loss, train_rmse, train_r2, train_mae = train(model, train_loader, criterion, optimizer_sparse, optimizer_dense, device)
     test_loss, test_rmse, test_r2, test_mae = evaluate(model, test_loader, criterion, device)
     print(f'epoch {epoch+1}/{num_epochs}')
     print(f'train loss: {train_loss:.4f}, train RMSE: {train_rmse:.4f}, train R2: {train_r2:.4f}, train MAE: {train_mae:.4f}')
     print(f'test loss: {test_loss:.4f}, test RMSE: {test_rmse:.4f}, test R2: {test_r2:.4f}, test MAE: {test_mae:.4f}')
+    if test_loss < best_loss:
+        best_loss = test_loss
+        trigger_times = 0
+        torch.save(model.state_dict(), best_model_path)
+        print(f'Model improved and saved at epoch {epoch+1}')
+    else:
+        trigger_times += 1
+        print(f'no improvement in test loss for {trigger_times} epoch')
+    if trigger_times >= patience:
+        print('early stopping')
+        break
+
+model.load_state_dict(torch.load(best_model_path))
+print('best model loaded for evaluation or further training.')
