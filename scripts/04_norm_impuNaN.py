@@ -46,6 +46,7 @@ def process_chunk_test_train(chunk, median_countries, median_ecoscore_score, med
     df = ecoscore_score_processing(df, median_ecoscore_score)
     df = countries_processing(df, median_countries)
     df = groups_processing(df, median_groups)
+    df = df[df['ecoscore_tags'] != 'not-applicable']
     return df
 
 # lecture et traitement du fichier jsonl en morceaux train test
@@ -62,6 +63,7 @@ def process_chunk_valid(chunk, median_countries, median_groups):
     df = chunk.copy()
     df = countries_processing(df, median_countries)
     df = groups_processing(df, median_groups)
+    df = df[df['ecoscore_tags'] != 'not-applicable']
     return df
 
 # lecture et traitement du fichier jsonl en morceaux valid
@@ -124,12 +126,12 @@ def main(chunk_size, file_id, data_path):
     print("browse throw valid file to process columns")
     browse_file_valid(estimated_chunks_valid, valid, valid_01, chunk_size, median_countries, median_groups)
     
-    print("deleting file jsonl train 00")
-    delete_file(train)
-    print("deleting file jsonl test 00")
-    delete_file(test)
-    print("deleting file jsonl valid 00")
-    delete_file(valid)
+    #print("deleting file jsonl train 00")
+    #delete_file(train)
+    #print("deleting file jsonl test 00")
+    #delete_file(test)
+    #print("deleting file jsonl valid 00")
+    #delete_file(valid)
 
 if __name__ == "__main__":
     chunk_size = sys.argv[1]
