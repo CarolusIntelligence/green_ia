@@ -21,6 +21,7 @@ pd.set_option('future.no_silent_downcasting', True)
 # MAIN ########################################################################
 ###############################################################################
 def main(chunk_size, file_id, data_path, MAX_SEQ_LEN, batch_size, embed_dim, hidden_dim, lr, patience, best_model_path):
+    print(f"model data = {chunk_size}, {file_id}, {data_path}, {MAX_SEQ_LEN}, {batch_size}, {embed_dim}, {hidden_dim}, {lr}, {patience}, {best_model_path}")
     chunk_size = int(chunk_size)
     MAX_SEQ_LEN = int(MAX_SEQ_LEN)
     batch_size = int(batch_size)

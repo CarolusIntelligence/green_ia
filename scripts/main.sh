@@ -1,7 +1,7 @@
 #!/bin/bash
 clear
 
-start_time=$(date "+%Y-%m-%d_%H:%M:%S")
+start_time=$(date "+%Y-%m-%d_%H-%M-%S")
 start_seconds=$(date +%s)
 log_file="../logs/${start_time}_logs.txt"
 echo "begin: $start_time" > "$log_file"
@@ -34,11 +34,11 @@ best_model_path="${best_model_path}${file_id}_${MAX_SEQ_LEN}_${batch_size}_${emb
   #python 03_split_dataset.py "$chunk_size" "$file_id" "$data_path"
   #echo "exec 04_norm_impuNaN.py"
   #python 04_norm_impuNaN.py "$chunk_size" "$file_id" "$data_path"
-  #echo "exec 05_pytorch_pred_score.py"
-  #python 05_pytorch_pred_score.py "$chunk_size" "$file_id" "$data_path" "$MAX_SEQ_LEN" "$batch_size" "$embed_dim" "$hidden_dim" "$lr" "$patience" "$best_model_path" 
+  echo "exec 05_pytorch_pred_score.py"
+  python 05_pytorch_pred_score.py "$chunk_size" "$file_id" "$data_path" "$MAX_SEQ_LEN" "$batch_size" "$embed_dim" "$hidden_dim" "$lr" "$patience" "$best_model_path" 
   echo "exec 06_pytorch_validation_model.py"
   python 06_pytorch_validation_model.py "$file_id" "$data_path"
-} #>> "$log_file" 2>&1
+} >> "$log_file" 2>&1
 
 end_time=$(date "+%Y-%m-%d %H:%M:%S")
 end_seconds=$(date +%s)
@@ -46,4 +46,4 @@ duration=$((end_seconds - start_seconds))
 {
   echo "end: $end_time"
   echo "total execution time: $((duration / 60)) minutes $((duration % 60)) seconds"
-} #>> "$log_file"
+} >> "$log_file"
