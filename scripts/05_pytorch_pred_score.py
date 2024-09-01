@@ -14,8 +14,8 @@ def load_jsonl(file_path):
         data = [json.loads(line) for line in file]
     return pd.DataFrame(data)
 
-train_df = load_jsonl('/home/carolus/Documents/school/green_ia/data/00_data/00_train_01.jsonl')
-test_df = load_jsonl('/home/carolus/Documents/school/green_ia/data/00_data/00_test_01.jsonl')
+train_df = load_jsonl('/home/carolus/Documents/school/green_ia/data/00_data/00_train_01.jsonl') # PARAM
+test_df = load_jsonl('/home/carolus/Documents/school/green_ia/data/00_data/00_test_01.jsonl') # PARAM
 
 X_train = train_df.drop(columns=['ecoscore_score'])
 y_train = train_df['ecoscore_score']
@@ -77,8 +77,8 @@ class CustomDataset(Dataset):
 
 train_dataset = CustomDataset(X_train_num, X_train_text_indices, y_train)
 test_dataset = CustomDataset(X_test_num, X_test_text_indices, y_test)
-train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
-test_loader = DataLoader(test_dataset, batch_size=64, shuffle=False)
+train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True) # PARAM
+test_loader = DataLoader(test_dataset, batch_size=64, shuffle=False) # PARAM
 
 class TextEncoder(nn.Module):
     def __init__(self, vocab_size, embed_dim, hidden_dim):
@@ -107,15 +107,15 @@ class ComplexModel(nn.Module):
 
 vocab_size = len(vocab)
 num_numeric_features = len(num_cols)
-embed_dim = 50
-hidden_dim = 128
+embed_dim = 50 # PARAM
+hidden_dim = 128 # PARAM
 output_dim = 1
 
 model = ComplexModel(vocab_size, num_numeric_features, embed_dim, hidden_dim, output_dim)
 sparse_params = list(model.text_encoder.embedding.parameters())  
 dense_params = list(set(model.parameters()) - set(sparse_params))
-optimizer_sparse = optim.SparseAdam(sparse_params, lr=0.001)
-optimizer_dense = optim.Adam(dense_params, lr=0.001)
+optimizer_sparse = optim.SparseAdam(sparse_params, lr=0.001) # PARAM
+optimizer_dense = optim.Adam(dense_params, lr=0.001) # PARAM
 criterion = nn.MSELoss()
 
 def calculate_metrics(y_true, y_pred):
@@ -185,16 +185,15 @@ def evaluate(model, dataloader, criterion, device):
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model.to(device)
-num_epochs = 50  
-patience = 5  
+num_epochs = 100  # PARAM
+patience = 5  # PARAM
 best_loss = float('inf')
 trigger_times = 0
-best_model_path = '../best_models/174.ci' # FILE ID 
+best_model_path = '174_best_model.ci' # FILE ID 
 
 for epoch in range(num_epochs):
     train_loss, train_rmse, train_r2, train_mae = train(model, train_loader, criterion, optimizer_sparse, optimizer_dense, device)
     test_loss, test_rmse, test_r2, test_mae = evaluate(model, test_loader, criterion, device)
-    print("\n")
     print(f'epoch {epoch+1}/{num_epochs}')
     print(f'train loss: {train_loss:.4f}, train RMSE: {train_rmse:.4f}, train R2: {train_r2:.4f}, train MAE: {train_mae:.4f}')
     print(f'test loss: {test_loss:.4f}, test RMSE: {test_rmse:.4f}, test R2: {test_r2:.4f}, test MAE: {test_mae:.4f}')
