@@ -39,7 +39,6 @@ def main(chunk_size, file_id, data_path, MAX_SEQ_LEN, batch_size, embed_dim, hid
     valid = data_path + file_id + '_valid_01.jsonl' 
     valid_df = load_jsonl(valid)
 
-    # Sample 50 random lines from validation data for retraining
     sample_valid_df = valid_df.sample(n=50, random_state=42)
 
     X_train = train_df.drop(columns=['ecoscore_score'])
@@ -49,14 +48,12 @@ def main(chunk_size, file_id, data_path, MAX_SEQ_LEN, batch_size, embed_dim, hid
     X_valid_sample = sample_valid_df.drop(columns=['ecoscore_score'])
     y_valid_sample = sample_valid_df['ecoscore_score']
     
-    # Full validation dataset for prediction
     X_valid_full = valid_df.drop(columns=['ecoscore_score'])
     y_valid_full = valid_df['ecoscore_score']
 
     num_cols = ['groups', 'countries', 'labels_note']
     text_cols = ['packaging', 'name', 'ingredients', 'categories']
 
-    # Preprocessing numerical and text data
     X_train_num = X_train[num_cols]
     X_train_text = X_train[text_cols].astype(str)  
     X_test_num = X_test[num_cols]
@@ -231,7 +228,7 @@ def main(chunk_size, file_id, data_path, MAX_SEQ_LEN, batch_size, embed_dim, hid
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
-    num_epochs = 2  
+    num_epochs = 100
     best_loss = float('inf')
     trigger_times = 0
 
@@ -256,15 +253,13 @@ def main(chunk_size, file_id, data_path, MAX_SEQ_LEN, batch_size, embed_dim, hid
     model.load_state_dict(torch.load(best_model_path))
     print('best model loaded for evaluation')
 
-    # Further train the model on the sampled validation data
-    print('Starting retraining on sampled validation data...')
+    print('starting retraining on sampled validation data...')
     for epoch in range(num_epochs):
         valid_loss, valid_rmse, valid_r2, valid_mae = train(model, valid_sample_loader, criterion, optimizer_sparse, optimizer_dense, device)
         print(f'epoch {epoch+1}/{num_epochs} (validation retrain)')
         print(f'valid loss: {valid_loss:.4f}, valid RMSE: {valid_rmse:.4f}, valid R2: {valid_r2:.4f}, valid MAE: {valid_mae:.4f}')
 
-    # Make predictions on the entire validation dataset
-    print('Generating predictions for entire validation dataset...')
+    print('generating predictions for entire validation dataset...')
     valid_predictions = []
     model.eval()
     with torch.no_grad():
@@ -273,9 +268,8 @@ def main(chunk_size, file_id, data_path, MAX_SEQ_LEN, batch_size, embed_dim, hid
             outputs = model(num_data, text_data)
             valid_predictions.extend(outputs.squeeze().tolist())
 
-    # Add predictions to the entire validation dataframe and save to new file
     valid_df['predictions'] = valid_predictions
-    valid_df.to_csv(data_path + file_id + '_valid_with_predictions.csv', index=False)
+    valid_df.to_csv(data_path + file_id + '_validation_data.csv', index=False)
     print('Predictions saved to', data_path + file_id + '_valid_with_predictions.csv')
 
 if __name__ == "__main__":
