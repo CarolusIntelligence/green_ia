@@ -46,7 +46,7 @@ def build_vocab(texts):
 
 all_texts = pd.concat([X_train_text[col] for col in text_cols])
 vocab = build_vocab(all_texts)
-MAX_SEQ_LEN = 50
+MAX_SEQ_LEN = 50 # PARAM
 
 def text_to_indices(text):
     tokens = tokenize(text)
@@ -189,7 +189,7 @@ num_epochs = 100  # PARAM
 patience = 5  # PARAM
 best_loss = float('inf')
 trigger_times = 0
-best_model_path = '174_best_model.ci' # FILE ID 
+best_model_path = '174_best_model.ci' # PARAM
 
 for epoch in range(num_epochs):
     train_loss, train_rmse, train_r2, train_mae = train(model, train_loader, criterion, optimizer_sparse, optimizer_dense, device)

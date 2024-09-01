@@ -12,11 +12,20 @@ data_path=$(jq -r '.data_path' config.json)
 scripts_path=$(jq -r '.scripts_path' config.json)
 logs_path=$(jq -r '.logs_path' config.json)
 chunk_size=$(jq -r '.chunk_size' config.json)
+MAX_SEQ_LEN=$(jq -r '.MAX_SEQ_LEN' config.json)
+batch_size=$(jq -r '.batch_size' config.json)
+embed_dim=$(jq -r '.embed_dim' config.json)
+hidden_dim=$(jq -r '.hidden_dim' config.json)
+lr=$(jq -r '.lr' config.json)
+patience=$(jq -r '.patience' config.json)
+best_model_path=$(jq -r '.best_model_path' config.json)
 
 data_path="${data_path}${file_id}_data/"
+best_model_path="${best_model_path}${file_id}_${MAX_SEQ_LEN}_${batch_size}_${embed_dim}_${hidden_dim}_${lr}.ci"
+echo $best_model_path
 
 {
-  #echo "exec 00_collect_data.py"
+  echo "exec 00_collect_data.py"
   #python 00_collect_data.py "$download_url" "$file_id" "$data_path" "$chunk_size"
   #echo "exec 01_keep_usefull_columns.py"
   #python 01_keep_usefull_columns.py "$chunk_size" "$file_id" "$data_path"
@@ -26,9 +35,9 @@ data_path="${data_path}${file_id}_data/"
   #python 03_split_dataset.py "$chunk_size" "$file_id" "$data_path"
   #echo "exec 04_norm_impuNaN.py"
   #python 04_norm_impuNaN.py "$chunk_size" "$file_id" "$data_path"
-  echo "exec 05_pytorch_pred_score.py"
+  #echo "exec 05_pytorch_pred_score.py"
   #python 05_pytorch_pred_score.py "$chunk_size" "$file_id" "$data_path"
-  python 05_pytorch_pred_score.py 
+  #python 05_pytorch_pred_score.py 
 } #>> "$log_file" 2>&1
 
 end_time=$(date "+%Y-%m-%d %H:%M:%S")

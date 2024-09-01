@@ -4,5 +4,12 @@
     "data_path": "/home/carolus/Documents/school/green_ia/data/",
     "scripts_path": "/home/carolus/Documents/school/green_ia/scripts/",
     "logs_path": "/home/carolus/Documents/school/green_ia/logs/",
-    "chunk_size": 10000
+    "chunk_size": 10000,
+    "MAX_SEQ_LEN": 50,
+    "batch_size": 64,
+    "embed_dim": 50,
+    "hidden_dim": 128,
+    "lr": 0.001,
+    "patience": 5,
+    "best_model_path": "../best_models/"
 }
