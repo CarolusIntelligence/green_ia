@@ -17,8 +17,6 @@ pd.set_option('display.max_rows', 100)
 warnings.filterwarnings("ignore", category=pd.errors.DtypeWarning)
 pd.set_option('future.no_silent_downcasting', True)
 
-
-
 ###############################################################################
 # MAIN ########################################################################
 ###############################################################################
@@ -30,7 +28,6 @@ def main(chunk_size, file_id, data_path, MAX_SEQ_LEN, batch_size, embed_dim, hid
     hidden_dim = int(hidden_dim)
     lr = float(lr)
     patience = int(patience)
-    valid = data_path + file_id + '_valid.jsonl' 
 
     def load_jsonl(file_path):
         with open(file_path, 'r') as file:
@@ -39,19 +36,42 @@ def main(chunk_size, file_id, data_path, MAX_SEQ_LEN, batch_size, embed_dim, hid
     
     train_df = load_jsonl(data_path + file_id + '_train_01.jsonl') 
     test_df = load_jsonl(data_path + file_id + '_test_01.jsonl') 
+    valid = data_path + file_id + '_valid_01.jsonl' 
+    valid_df = load_jsonl(valid)
+
+    # Sample 50 random lines from validation data for retraining
+    sample_valid_df = valid_df.sample(n=50, random_state=42)
+
     X_train = train_df.drop(columns=['ecoscore_score'])
     y_train = train_df['ecoscore_score']
     X_test = test_df.drop(columns=['ecoscore_score'])
     y_test = test_df['ecoscore_score']
+    X_valid_sample = sample_valid_df.drop(columns=['ecoscore_score'])
+    y_valid_sample = sample_valid_df['ecoscore_score']
+    
+    # Full validation dataset for prediction
+    X_valid_full = valid_df.drop(columns=['ecoscore_score'])
+    y_valid_full = valid_df['ecoscore_score']
+
     num_cols = ['groups', 'countries', 'labels_note']
     text_cols = ['packaging', 'name', 'ingredients', 'categories']
+
+    # Preprocessing numerical and text data
     X_train_num = X_train[num_cols]
     X_train_text = X_train[text_cols].astype(str)  
     X_test_num = X_test[num_cols]
     X_test_text = X_test[text_cols].astype(str)    
+    X_valid_sample_num = X_valid_sample[num_cols]
+    X_valid_sample_text = X_valid_sample[text_cols].astype(str)
+    X_valid_full_num = X_valid_full[num_cols]
+    X_valid_full_text = X_valid_full[text_cols].astype(str)
+
     scaler = StandardScaler()
     X_train_num = scaler.fit_transform(X_train_num)
     X_test_num = scaler.transform(X_test_num)
+    X_valid_sample_num = scaler.transform(X_valid_sample_num)
+    X_valid_full_num = scaler.transform(X_valid_full_num)
+
     tokenizer = get_tokenizer('basic_english')
 
     def tokenize(text):
@@ -81,8 +101,13 @@ def main(chunk_size, file_id, data_path, MAX_SEQ_LEN, batch_size, embed_dim, hid
 
     X_train_text_combined = X_train_text.apply(lambda x: ' '.join(x), axis=1)
     X_test_text_combined = X_test_text.apply(lambda x: ' '.join(x), axis=1)
+    X_valid_sample_text_combined = X_valid_sample_text.apply(lambda x: ' '.join(x), axis=1)
+    X_valid_full_text_combined = X_valid_full_text.apply(lambda x: ' '.join(x), axis=1)
+
     X_train_text_indices = text_data_to_tensor(X_train_text_combined)
     X_test_text_indices = text_data_to_tensor(X_test_text_combined)
+    X_valid_sample_text_indices = text_data_to_tensor(X_valid_sample_text_combined)
+    X_valid_full_text_indices = text_data_to_tensor(X_valid_full_text_combined)
 
     class CustomDataset(Dataset):
         def __init__(self, num_data, text_data, labels):
@@ -96,8 +121,13 @@ def main(chunk_size, file_id, data_path, MAX_SEQ_LEN, batch_size, embed_dim, hid
 
     train_dataset = CustomDataset(X_train_num, X_train_text_indices, y_train)
     test_dataset = CustomDataset(X_test_num, X_test_text_indices, y_test)
+    valid_sample_dataset = CustomDataset(X_valid_sample_num, X_valid_sample_text_indices, y_valid_sample)
+    valid_full_dataset = CustomDataset(X_valid_full_num, X_valid_full_text_indices, y_valid_full)
+
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False) 
+    valid_sample_loader = DataLoader(valid_sample_dataset, batch_size=batch_size, shuffle=True)
+    valid_full_loader = DataLoader(valid_full_dataset, batch_size=batch_size, shuffle=False)
 
     class TextEncoder(nn.Module):
         def __init__(self, vocab_size, embed_dim, hidden_dim):
@@ -199,7 +229,6 @@ def main(chunk_size, file_id, data_path, MAX_SEQ_LEN, batch_size, embed_dim, hid
         rmse, r2, mae = calculate_metrics(all_labels, all_preds)
         return epoch_loss, rmse, r2, mae
 
-
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
     num_epochs = 2  
@@ -227,6 +256,27 @@ def main(chunk_size, file_id, data_path, MAX_SEQ_LEN, batch_size, embed_dim, hid
     model.load_state_dict(torch.load(best_model_path))
     print('best model loaded for evaluation')
 
+    # Further train the model on the sampled validation data
+    print('Starting retraining on sampled validation data...')
+    for epoch in range(num_epochs):
+        valid_loss, valid_rmse, valid_r2, valid_mae = train(model, valid_sample_loader, criterion, optimizer_sparse, optimizer_dense, device)
+        print(f'epoch {epoch+1}/{num_epochs} (validation retrain)')
+        print(f'valid loss: {valid_loss:.4f}, valid RMSE: {valid_rmse:.4f}, valid R2: {valid_r2:.4f}, valid MAE: {valid_mae:.4f}')
+
+    # Make predictions on the entire validation dataset
+    print('Generating predictions for entire validation dataset...')
+    valid_predictions = []
+    model.eval()
+    with torch.no_grad():
+        for num_data, text_data, _ in valid_full_loader:
+            num_data, text_data = num_data.to(device), text_data.to(device)
+            outputs = model(num_data, text_data)
+            valid_predictions.extend(outputs.squeeze().tolist())
+
+    # Add predictions to the entire validation dataframe and save to new file
+    valid_df['predictions'] = valid_predictions
+    valid_df.to_csv(data_path + file_id + '_valid_with_predictions.csv', index=False)
+    print('Predictions saved to', data_path + file_id + '_valid_with_predictions.csv')
 
 if __name__ == "__main__":
     chunk_size = sys.argv[1]
