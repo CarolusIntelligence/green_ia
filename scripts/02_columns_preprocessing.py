@@ -2137,8 +2137,6 @@ def countries_processing(df, values_to_replace):
     df['countries'] = df['countries'].replace(values_to_replace, np.nan)
     country_to_id = {entry["country"]: entry["id"] for entry in countries_to_num}
     df['countries'] = df['countries'].map(country_to_id).fillna(np.nan)
-    scaler = MinMaxScaler()
-    df['countries'] = scaler.fit_transform(df[['countries']])
     return df
 
 def labels_processing(df, values_to_replace): 
@@ -2261,6 +2259,7 @@ def delete_useless_lines(df, values_to_replace):
     df = df[~df['name'].isin(values_to_replace) & df['name'].notna()]
     return df
 
+
 def process_chunk(chunk, values_to_replace):
     df = chunk.copy()
     rename_columns_processing(df)
@@ -2310,8 +2309,8 @@ def main(chunk_size, file_id, data_path):
     estimated_chunks = count_chunks(jsonl_02, chunk_size)
     print("browse throw jsonl 02 file to process columns")
     browse_file(estimated_chunks, jsonl_02, jsonl_03, chunk_size, values_to_replace)
-    print("deleting file jsonl 02")
-    delete_file(jsonl_02)
+    #print("deleting file jsonl 02")
+    #delete_file(jsonl_02)
 
 if __name__ == "__main__":
     chunk_size = sys.argv[1]

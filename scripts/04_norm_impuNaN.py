@@ -49,12 +49,20 @@ def process_chunk_test_train(chunk, median_countries, median_ecoscore_score, med
     df = df[df['ecoscore_tags'] != 'not-applicable']
     return df
 
+def remove_percent_nan(df, column):
+    nan_rows = df[df[column].isna()]
+    keep_nan_rows = nan_rows.sample(frac=0.05, random_state=42)
+    non_nan_rows = df[df[column].notna()]
+    df_cleaned = pd.concat([non_nan_rows, keep_nan_rows])
+    return df_cleaned.reset_index(drop=True)
+
 # lecture et traitement du fichier jsonl en morceaux train test
 def browse_file_test_train(estimated_chunks, input_file, output_file, chunk_size, median_countries, median_ecoscore_score, median_groups):
     chunk_iter = 0
     with open(input_file, 'r') as infile, open(output_file, 'w') as outfile:
         for chunk in pd.read_json(infile, lines=True, chunksize=chunk_size):
             chunk_iter +=1
+            chunk = remove_percent_nan(chunk, 'ecoscore_score')
             processed_chunk = process_chunk_test_train(chunk, median_countries, median_ecoscore_score, median_groups)
             processed_chunk.to_json(outfile, orient='records', lines=True)
             print(f"-----------------------------------------------------------> progress: {(chunk_iter * 100) / estimated_chunks} %")            
@@ -126,12 +134,12 @@ def main(chunk_size, file_id, data_path):
     print("browse throw valid file to process columns")
     browse_file_valid(estimated_chunks_valid, valid, valid_01, chunk_size, median_countries, median_groups)
     
-    print("deleting file jsonl train 00")
-    delete_file(train)
-    print("deleting file jsonl test 00")
-    delete_file(test)
-    print("deleting file jsonl valid 00")
-    delete_file(valid)
+    #print("deleting file jsonl train 00")
+    #delete_file(train)
+    #print("deleting file jsonl test 00")
+    #delete_file(test)
+    #print("deleting file jsonl valid 00")
+    #delete_file(valid)
 
 if __name__ == "__main__":
     chunk_size = sys.argv[1]

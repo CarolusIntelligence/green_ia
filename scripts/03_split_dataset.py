@@ -167,11 +167,11 @@ def split_jsonl_file(jsonl_03, train, test, valid, jsonl_04, chunk_size):
     line_count_number = line_count(jsonl_04, type = 1) # compter le nombre de lignes total
     # compter le nombre de lignes pour chaque fichier 
     train_nb_line_ko = math.floor((invalid_ecoscore_count * 80) / 100) # train ecoscore ko
-    train_nb_line_ok = math.floor((valid_ecoscore_count * 80) / 100) # train ecoscore ok
+    train_nb_line_ok = math.floor((valid_ecoscore_count * 84.9) / 100) # train ecoscore ok
     test_nb_line_ko = math.floor((invalid_ecoscore_count * 20) / 100) # test ecoscore ko
     test_nb_line_ok = math.floor((valid_ecoscore_count * 15) / 100) # test ecoscore ok
     valid_nb_line_ko = math.floor((invalid_ecoscore_count * 0) / 100) # valid ecoscore ko
-    valid_nb_line_ok = math.floor((valid_ecoscore_count * 5) / 100) # valid ecoscore ok 
+    valid_nb_line_ok = math.floor((valid_ecoscore_count * 0.1) / 100) # valid ecoscore ok 
     # répartir les lignes entre les fichiers
     line_repartitor(jsonl_04, train, test, valid, train_nb_line_ko, train_nb_line_ok, test_nb_line_ko, test_nb_line_ok, valid_nb_line_ko, valid_nb_line_ok)
 
@@ -189,8 +189,8 @@ def main(chunk_size, file_id, data_path):
     valid = data_path + file_id + "_valid" + ".jsonl"
     print("start spliting dataset")
     split_jsonl_file(jsonl_03, train, test, valid, jsonl_04, chunk_size)
-    print("deleting file jsonl 03")
-    delete_file(jsonl_03)
+    #print("deleting file jsonl 03")
+    #delete_file(jsonl_03)
 
 if __name__ == "__main__":
     chunk_size = sys.argv[1]
