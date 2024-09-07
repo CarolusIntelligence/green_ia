@@ -134,12 +134,12 @@ def main(chunk_size, file_id, data_path):
     print("browse throw valid file to process columns")
     browse_file_valid(estimated_chunks_valid, valid, valid_01, chunk_size, median_countries, median_groups)
     
-    #print("deleting file jsonl train 00")
-    #delete_file(train)
-    #print("deleting file jsonl test 00")
-    #delete_file(test)
-    #print("deleting file jsonl valid 00")
-    #delete_file(valid)
+    print("deleting file jsonl train 00")
+    delete_file(train)
+    print("deleting file jsonl test 00")
+    delete_file(test)
+    print("deleting file jsonl valid 00")
+    delete_file(valid)
 
 if __name__ == "__main__":
     chunk_size = sys.argv[1]

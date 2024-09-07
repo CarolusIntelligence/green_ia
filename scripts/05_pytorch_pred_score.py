@@ -40,7 +40,7 @@ def main(chunk_size, file_id, data_path, MAX_SEQ_LEN, batch_size, embed_dim, hid
     valid = data_path + file_id + '_valid_01.jsonl' 
     valid_df = load_jsonl(valid)
 
-    sample_valid_df = valid_df.sample(n=50, random_state=42)
+    sample_valid_df = valid_df.sample(n=100, random_state=42)
 
     X_train = train_df.drop(columns=['ecoscore_score'])
     y_train = train_df['ecoscore_score']

@@ -25,18 +25,17 @@ best_model_path="${best_model_path}${file_id}_${MAX_SEQ_LEN}_${batch_size}_${emb
 
 {
   #echo "exec 00_collect_data.py"
-  #python 00_collect_data.py "$download_url" "$file_id" "$data_path" "$chunk_size" # ACTIF 
+  #python 00_collect_data.py "$download_url" "$file_id" "$data_path" "$chunk_size" 
   #echo "exec 01_keep_usefull_columns.py"
-  #python 01_keep_usefull_columns.py "$chunk_size" "$file_id" "$data_path" # INACTIF 
+  #python 01_keep_usefull_columns.py "$chunk_size" "$file_id" "$data_path" 
   #echo "exec 02_columns_preprocessing.py"
   #python 02_columns_preprocessing.py "$chunk_size" "$file_id" "$data_path" "$scripts_path"
   #echo "exec 03_split_dataset.py"
   #python 03_split_dataset.py "$chunk_size" "$file_id" "$data_path"
-  echo "exec 04_norm_impuNaN.py"
-  python 04_norm_impuNaN.py "$chunk_size" "$file_id" "$data_path"
+  #echo "exec 04_norm_impuNaN.py"
+  #python 04_norm_impuNaN.py "$chunk_size" "$file_id" "$data_path"
   #echo "exec 05_pytorch_pred_score.py"
-  #python 05_pytorch_pred_score.py "$chunk_size" "$file_id" "$data_path" "$MAX_SEQ_LEN" "$batch_size" "$embed_dim" "$hidden_dim" "$lr" "$patience" "$best_model_path"
-  #python new_model.py "$chunk_size" "$file_id" "$data_path" "$MAX_SEQ_LEN" "$batch_size" "$embed_dim" "$hidden_dim" "$lr" "$patience" "$best_model_path" 
+  python 05_pytorch_pred_score.py "$chunk_size" "$file_id" "$data_path" "$MAX_SEQ_LEN" "$batch_size" "$embed_dim" "$hidden_dim" "$lr" "$patience" "$best_model_path"
   #echo "exec 06_pytorch_validation_model.py"
   #python 06_pytorch_validation_model.py "$file_id" "$data_path"
 
