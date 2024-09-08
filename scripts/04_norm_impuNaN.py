@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 import os
-from sklearn.preprocessing import MinMaxScaler
 import warnings
 import json
 import re
@@ -28,7 +27,29 @@ def delete_file(file_path):
 def ecoscore_score_processing(df, median_ecoscore_score): 
     df['ecoscore_score'] = pd.to_numeric(df['ecoscore_score'], errors='coerce')
     df['ecoscore_score'] = df['ecoscore_score'].apply(lambda x: max(0, min(x, 100)) if pd.notna(x) else x)
+    nan_indices = df[df['ecoscore_score'].isna()].index
+    n_nan = len(nan_indices)
+    n_to_drop = int(0.98 * n_nan)
+    indices_to_drop = np.random.choice(nan_indices, size=n_to_drop, replace=False)
+    df = df.drop(indices_to_drop)
     df['ecoscore_score'] = df['ecoscore_score'].fillna(median_ecoscore_score)
+    return df
+
+def ecoscore_tags_processing(df):
+    def replace_nan_based_on_score(row):
+        if pd.isna(row['ecoscore_tags']):
+            if 80 <= row['ecoscore_score'] <= 100:
+                return 0
+            elif 60 <= row['ecoscore_score'] < 80:
+                return 1
+            elif 40 <= row['ecoscore_score'] < 60:
+                return 2
+            elif 20 <= row['ecoscore_score'] < 40:
+                return 3
+            elif 0 <= row['ecoscore_score'] < 20:
+                return 4
+        return row['ecoscore_tags']
+    df['ecoscore_tags'] = df.apply(replace_nan_based_on_score, axis=1)
     return df
 
 def countries_processing(df, median_countries): 
@@ -47,14 +68,8 @@ def process_chunk_test_train(chunk, median_countries, median_ecoscore_score, med
     df = countries_processing(df, median_countries)
     df = groups_processing(df, median_groups)
     df = df[df['ecoscore_tags'] != 'not-applicable']
+    df = ecoscore_tags_processing(df)
     return df
-
-def remove_percent_nan(df, column):
-    nan_rows = df[df[column].isna()]
-    keep_nan_rows = nan_rows.sample(frac=0.1, random_state=42)
-    non_nan_rows = df[df[column].notna()]
-    df_cleaned = pd.concat([non_nan_rows, keep_nan_rows])
-    return df_cleaned.reset_index(drop=True)
 
 # lecture et traitement du fichier jsonl en morceaux train test
 def browse_file_test_train(estimated_chunks, input_file, output_file, chunk_size, median_countries, median_ecoscore_score, median_groups):
@@ -62,7 +77,6 @@ def browse_file_test_train(estimated_chunks, input_file, output_file, chunk_size
     with open(input_file, 'r') as infile, open(output_file, 'w') as outfile:
         for chunk in pd.read_json(infile, lines=True, chunksize=chunk_size):
             chunk_iter +=1
-            chunk = remove_percent_nan(chunk, 'ecoscore_score')
             processed_chunk = process_chunk_test_train(chunk, median_countries, median_ecoscore_score, median_groups)
             processed_chunk.to_json(outfile, orient='records', lines=True)
             print(f"-----------------------------------------------------------> progress: {(chunk_iter * 100) / estimated_chunks} %")            
@@ -71,7 +85,6 @@ def process_chunk_valid(chunk, median_countries, median_groups):
     df = chunk.copy()
     df = countries_processing(df, median_countries)
     df = groups_processing(df, median_groups)
-    df = df[df['ecoscore_tags'] != 'not-applicable']
     return df
 
 # lecture et traitement du fichier jsonl en morceaux valid
@@ -95,6 +108,7 @@ def calculate_global_median(file_path, column_name, chunksize):
     else:
         raise ValueError(f"Error, only empty values {column_name}")
     
+
 
 
 ###############################################################################

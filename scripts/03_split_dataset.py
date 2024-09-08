@@ -13,7 +13,6 @@ import math
 pd.set_option('display.max_rows', 50)
 warnings.filterwarnings("ignore", category=pd.errors.DtypeWarning)
 
-
 def delete_file(file_path):
     if os.path.exists(file_path):
         os.remove(file_path)
@@ -107,7 +106,6 @@ def line_repartitor(jsonl_03, train, test, valid, train_nb_line_ko, train_nb_lin
         total_iter, ok_iter, ko_iter = 0, 0, 0
         with jsonlines.open(jsonl_03, mode='r') as reader:
             for obj in reader:
-                #ecoscore_score = obj.get('ecoscore_score', float('inf'))
                 ecoscore_score = obj.get('ecoscore_score', float('nan'))
                 total_iter+=1
                 if (ecoscore_score is np.nan or ecoscore_score is None):
