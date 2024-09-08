@@ -51,7 +51,7 @@ def process_chunk_test_train(chunk, median_countries, median_ecoscore_score, med
 
 def remove_percent_nan(df, column):
     nan_rows = df[df[column].isna()]
-    keep_nan_rows = nan_rows.sample(frac=0.001, random_state=42)
+    keep_nan_rows = nan_rows.sample(frac=0.1, random_state=42)
     non_nan_rows = df[df[column].notna()]
     df_cleaned = pd.concat([non_nan_rows, keep_nan_rows])
     return df_cleaned.reset_index(drop=True)
