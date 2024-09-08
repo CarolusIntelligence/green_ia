@@ -2167,6 +2167,14 @@ def ecoscore_tags_processing(df, values_to_replace):
     df['ecoscore_tags'] = df['ecoscore_tags'].replace(values_to_replace, 'empty')
     df['ecoscore_tags'] = df['ecoscore_tags'].apply(lambda x: ', '.join(x) if isinstance(x, list) else x)
     df['ecoscore_tags'] = df['ecoscore_tags'].replace('unknown', 'empty')
+    df['ecoscore_tags'] = df['ecoscore_tags'].replace({
+        'a': 0,
+        'b': 1,
+        'c': 2,
+        'd': 3,
+        'e': 4,
+        'empty': np.nan
+    })
     return df
 
 def ecoscore_score_processing(df, values_to_replace): 
