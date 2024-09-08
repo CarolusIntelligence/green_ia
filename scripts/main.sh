@@ -34,7 +34,7 @@ best_model_path="${best_model_path}${file_id}_${MAX_SEQ_LEN}_${batch_size}_${emb
   #python 03_split_dataset.py "$chunk_size" "$file_id" "$data_path"
   #echo "exec 04_norm_impuNaN.py"
   #python 04_norm_impuNaN.py "$chunk_size" "$file_id" "$data_path"
-  #echo "exec 05_pytorch_pred_score.py"
+  echo "exec 05_pytorch_pred_score.py"
   python 05_pytorch_pred_score.py "$chunk_size" "$file_id" "$data_path" "$MAX_SEQ_LEN" "$batch_size" "$embed_dim" "$hidden_dim" "$lr" "$patience" "$best_model_path"
   #echo "exec 06_pytorch_validation_model.py"
   #python 06_pytorch_validation_model.py "$file_id" "$data_path"
