@@ -4,7 +4,7 @@ clear
 start_time=$(date "+%Y-%m-%d_%H-%M-%S")
 start_seconds=$(date +%s)
 log_file="../logs/${start_time}_logs.txt"
-echo "begin: $start_time" #> "$log_file"
+echo "begin: $start_time" > "$log_file"
 
 download_url=$(jq -r '.download_url' config.json)
 file_id=$(jq -r '.file_id' config.json)
@@ -24,7 +24,7 @@ data_path="${data_path}${file_id}_data/"
 best_model_path="${best_model_path}${file_id}_${MAX_SEQ_LEN}_${batch_size}_${embed_dim}_${hidden_dim}_${lr}.ci"
 
 {
-  #echo "toto"
+  # CREATION DATASET 
   #echo "exec 00_collect_data.py"
   #python 00_collect_data.py "$download_url" "$file_id" "$data_path" "$chunk_size" 
   #echo "exec 01_keep_usefull_columns.py"
@@ -33,14 +33,16 @@ best_model_path="${best_model_path}${file_id}_${MAX_SEQ_LEN}_${batch_size}_${emb
   #python 02_columns_preprocessing.py "$chunk_size" "$file_id" "$data_path" "$scripts_path"
   #echo "exec 03_split_dataset.py"
   #python 03_split_dataset.py "$chunk_size" "$file_id" "$data_path"
-  echo "exec 04_norm_impuNaN.py"
-  python 04_norm_impuNaN.py "$chunk_size" "$file_id" "$data_path"
+  #echo "exec 04_norm_impuNaN.py"
+  #python 04_norm_impuNaN.py "$chunk_size" "$file_id" "$data_path"
+
+  # ENTRAINEMENT MODELE IA 
   #echo "exec 05_pytorch_pred_score.py"
   #python 05_pytorch_pred_score.py "$chunk_size" "$file_id" "$data_path" "$MAX_SEQ_LEN" "$batch_size" "$embed_dim" "$hidden_dim" "$lr" "$patience" "$best_model_path"
   #echo "exec 06_pytorch_validation_model.py"
   #python 06_pytorch_validation_model.py "$file_id" "$data_path"
 
-} #>> "$log_file" 2>&1
+} >> "$log_file" 2>&1
 
 end_time=$(date "+%Y-%m-%d %H:%M:%S")
 end_seconds=$(date +%s)
@@ -48,4 +50,4 @@ duration=$((end_seconds - start_seconds))
 {
   echo "end: $end_time"
   echo "total execution time: $((duration / 60)) minutes $((duration % 60)) seconds"
-} # >> "$log_file"
+}  >> "$log_file"
