@@ -4,7 +4,7 @@ clear
 start_time=$(date "+%Y-%m-%d_%H-%M-%S")
 start_seconds=$(date +%s)
 log_file="../logs/${start_time}_logs.txt"
-echo "begin: $start_time" > "$log_file"
+echo "begin: $start_time" # > "$log_file" -------------------------------------------------------------------------------> ICI
 
 download_url=$(jq -r '.download_url' config.json)
 file_id=$(jq -r '.file_id' config.json)
@@ -42,7 +42,7 @@ best_model_path="${best_model_path}${file_id}_${MAX_SEQ_LEN}_${batch_size}_${emb
   #echo "exec 06_pytorch_validation_model.py"
   #python 06_pytorch_validation_model.py "$file_id" "$data_path"
 
-} >> "$log_file" 2>&1
+} # >> "$log_file" 2>&1 -------------------------------------------------------------------------------> ICI
 
 end_time=$(date "+%Y-%m-%d %H:%M:%S")
 end_seconds=$(date +%s)
@@ -50,4 +50,4 @@ duration=$((end_seconds - start_seconds))
 {
   echo "end: $end_time"
   echo "total execution time: $((duration / 60)) minutes $((duration % 60)) seconds"
-}  >> "$log_file"
+}  # >> "$log_file" -------------------------------------------------------------------------------> ICI
