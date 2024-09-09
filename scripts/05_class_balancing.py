@@ -69,12 +69,12 @@ def main(chunk_size, file_id, data_path):
     display_class_counts(test_balanced_df, "_test_02.jsonl", target_column)
     display_class_counts(valid_balanced_df, "_valid_02.jsonl", target_column)   
     
-    print(f"deleting {train_data_path}")
-    delete_file(train_data_path)
-    print(f"deleting {test_data_path}")
-    delete_file(test_data_path)
-    print(f"deleting {valid_data_path}")
-    delete_file(valid_data_path)
+    #print(f"deleting {train_data_path}")
+    #delete_file(train_data_path)
+    #print(f"deleting {test_data_path}")
+    #delete_file(test_data_path)
+    #print(f"deleting {valid_data_path}")
+    #delete_file(valid_data_path)
 
 if __name__ == "__main__":
     chunk_size = sys.argv[1]

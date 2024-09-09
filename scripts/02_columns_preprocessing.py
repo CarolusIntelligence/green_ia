@@ -2264,15 +2264,6 @@ def delete_useless_lines(df, values_to_replace):
     df = df[~df['name'].isin(values_to_replace) & df['name'].notna()]
     return df
 
-def merge_text_columns(df):
-    for col in ['packaging', 'name', 'ingredients']:
-        if col not in df.columns:
-            raise ValueError(f"ERROR, column '{col}' not find")
-    df['text_data'] = df['packaging'].fillna('') + ' ' + df['name'].fillna('') + ' ' + df['ingredients'].fillna('')
-    df['text_data'] = df['text_data'].str.strip()
-    df.drop(columns=['packaging', 'name', 'ingredients'], inplace=True)
-    return df
-
 def process_chunk(chunk, values_to_replace):
     df = chunk.copy()
     rename_columns_processing(df)
@@ -2287,7 +2278,6 @@ def process_chunk(chunk, values_to_replace):
     countries_processing(df, values_to_replace)
     labels_processing(df, values_to_replace)
     delete_useless_lines(df, values_to_replace)
-    merge_text_columns(df)
     return df
 
 # lecture et traitement du fichier jsonl en morceaux
@@ -2322,8 +2312,8 @@ def main(chunk_size, file_id, data_path):
     estimated_chunks = count_chunks(jsonl_02, chunk_size)
     print("browse throw jsonl 02 file to process columns")
     browse_file(estimated_chunks, jsonl_02, jsonl_03, chunk_size, values_to_replace)
-    print("deleting file jsonl 02")
-    delete_file(jsonl_02)
+    #print("deleting file jsonl 02")
+    #delete_file(jsonl_02)
 
 if __name__ == "__main__":
     chunk_size = sys.argv[1]

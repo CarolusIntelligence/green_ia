@@ -44,11 +44,29 @@ def main(chunk_size, file_id, data_path):
                 'categories_tags',
                 'ecoscore_score',
                 'labels_tags',
-                'countries']
+                'countries'
+                'allergens_from_ingredients',
+                'ecoscore_data',
+                'food_groups_tags',
+                'nova_group',
+                'ingredients_from_or_that_may_be_from_palm_oil_n',
+                'nutrient_levels_tags',
+                'categories',
+                'nutriscore_tags',
+                'nutriments',
+                'additives_old_n',
+                'stores',
+                'popularity_tags',
+                'packagings_materials',
+                'compared_to_category',
+                'nutriscore_data',
+                '_keywords',
+                'packaging_tags',]
+                
     print("generating jsonl 02 with only usefull columns")
     jsonl_filtered_creator(jsonl_01, columns_to_keep, jsonl_02, chunk_size)
-    print("deleting file jsonl 01")
-    delete_file(jsonl_01)
+    #print("deleting file jsonl 01")
+    #delete_file(jsonl_01)
 
 if __name__ == "__main__":
     chunk_size = sys.argv[1]
