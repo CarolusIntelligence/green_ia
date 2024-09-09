@@ -35,6 +35,8 @@ best_model_path="${best_model_path}${file_id}_${MAX_SEQ_LEN}_${batch_size}_${emb
   #python 03_split_dataset.py "$chunk_size" "$file_id" "$data_path"
   #echo "exec 04_norm_impuNaN.py"
   #python 04_norm_impuNaN.py "$chunk_size" "$file_id" "$data_path"
+  echo "exec 05_class_balancing.py"
+  python 05_class_balancing.py "$chunk_size" "$file_id" "$data_path"
 
   # ENTRAINEMENT MODELE IA 
   #echo "exec 05_pytorch_pred_score.py"

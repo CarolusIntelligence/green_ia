@@ -2,3 +2,4 @@ data/*
 .vscode
 logs/*
 best_models/*
+scripts/test_model/*

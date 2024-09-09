@@ -69,8 +69,8 @@ def main(download_url, file_id, data_path, chunk_size):
     download_file(download_url, jsonl_gz, chunk_size)
     print("uncompress jsonl file")
     un_gz_file(file_id, data_path, jsonl_gz, jsonl)
-    #print("delete jsonl file compressed")
-    #delete_file(jsonl_gz)
+    print("delete jsonl file compressed")
+    delete_file(jsonl_gz)
 
 if __name__ == "__main__":
     download_url = sys.argv[1]
