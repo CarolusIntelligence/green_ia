@@ -57,8 +57,8 @@ def main(chunk_size, file_id, data_path):
                 'packaging_tags',]
     print("generating jsonl 02 with only usefull columns")
     jsonl_filtered_creator(jsonl_01, columns_to_keep, jsonl_02, chunk_size)
-    #print("deleting file jsonl 01")
-    #delete_file(jsonl_01)
+    print("deleting file jsonl 01")
+    delete_file(jsonl_01)
 
 if __name__ == "__main__":
     chunk_size = sys.argv[1]
