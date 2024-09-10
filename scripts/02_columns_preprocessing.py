@@ -29,7 +29,7 @@ def rename_columns_processing(df):
     df.rename(columns={'ingredients_tags': 'ingredients_temp'}, inplace=True)
     df.rename(columns={'product_name': 'name'}, inplace=True)
     df.rename(columns={'categories_tags': 'categories_temp'}, inplace=True)
-    df.rename(columns={'labels_tags': 'labels_temp'}, inplace=True)
+    #df.rename(columns={'labels_tags': 'labels_temp'}, inplace=True)
     return df
 
 def countries_processing(df, values_to_replace): 
@@ -2210,16 +2210,6 @@ def name_processing(df, values_to_replace):
     df['ingredients'] = df['ingredients'].replace(values_to_replace, 'empty') 
     return df
 
-def code_processing(df, values_to_replace): 
-    df['code'] = df['code'].replace(values_to_replace, np.nan) 
-    df['code'] = pd.to_numeric(df['code'], errors='coerce')
-    df['code'] = df['code'].apply(lambda x: np.nan if pd.isna(x) else int(round(x)))
-    return df
-
-def create_new_col(df): 
-    df['type'] = pd.NA
-    return df
-
 def ingredients_processing(df, values_to_replace): 
     df['ingredients_temp'] = df['ingredients_temp'].replace("", np.nan)  # remplace vide par np.nan
     df['ingredients_temp'] = df['ingredients_temp'].apply(lambda x: x if isinstance(x, list) else []) # remplace np.nan par liste vide 
@@ -2270,13 +2260,31 @@ def process_chunk(chunk, values_to_replace):
     ecoscore_score_processing(df, values_to_replace)
     groups_processing(df, values_to_replace)
     ingredients_processing(df, values_to_replace)
-    packaging_processing(df, values_to_replace)
+    #packaging_processing(df, values_to_replace)
     ecoscore_tags_processing(df, values_to_replace)
     categories_processing(df, values_to_replace)
-        #code_processing(df, values_to_replace)
     name_processing(df, values_to_replace)
     countries_processing(df, values_to_replace)
-    labels_processing(df, values_to_replace)
+    #labels_processing(df, values_to_replace)
+
+    # CHANTIER ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    #allergens_processing(df, values_to_replace)
+    #ecoscore_data_processing(df, values_to_replace)
+    #food_groups_processing(df, values_to_replace)
+    #nova_group_processing(df, values_to_replace)
+    #palm_oil_processing(df, values_to_replace)
+    #nutrient_level_processing(df, values_to_replace)
+    #nutriscore_tags_processing(df, values_to_replace)
+    #nutriments_processing(df, values_to_replace)
+    #additives_processing(df, values_to_replace)
+    #stores_processing(df, values_to_replace)
+    #popularity_processing(df, values_to_replace)
+    #packaging_materials_processing(df, values_to_replace)
+    #compared_to_category_processing(df, values_to_replace)
+    #nutriscore_data_processing(df, values_to_replace)
+    #keyword_processing(df, values_to_replace)
+    #packaging_tags_processing(df, values_to_replace)
+
     delete_useless_lines(df, values_to_replace)
     return df
 

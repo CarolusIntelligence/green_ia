@@ -38,14 +38,11 @@ def main(chunk_size, file_id, data_path):
     jsonl_02 = data_path + file_id + '_openfoodfacts_02.jsonl' 
     columns_to_keep = ['pnns_groups_1',
                 'ingredients_tags',
-                'packaging',
                 'product_name',
                 'ecoscore_tags',
                 'categories_tags',
                 'ecoscore_score',
-                'labels_tags',
-                'countries'
-                'allergens_from_ingredients',
+                'countries',
                 'ecoscore_data',
                 'food_groups_tags',
                 'nova_group',
@@ -53,16 +50,11 @@ def main(chunk_size, file_id, data_path):
                 'nutrient_levels_tags',
                 'categories',
                 'nutriscore_tags',
-                'nutriments',
                 'additives_old_n',
                 'stores',
-                'popularity_tags',
-                'packagings_materials',
                 'compared_to_category',
-                'nutriscore_data',
                 '_keywords',
                 'packaging_tags',]
-                
     print("generating jsonl 02 with only usefull columns")
     jsonl_filtered_creator(jsonl_01, columns_to_keep, jsonl_02, chunk_size)
     #print("deleting file jsonl 01")

@@ -187,8 +187,8 @@ def main(chunk_size, file_id, data_path):
     valid = data_path + file_id + "_valid" + ".jsonl"
     print("start spliting dataset")
     split_jsonl_file(jsonl_03, train, test, valid, jsonl_04, chunk_size)
-    print("deleting file jsonl 03")
-    delete_file(jsonl_03)
+    #print("deleting file jsonl 03")
+    #delete_file(jsonl_03)
 
 if __name__ == "__main__":
     chunk_size = sys.argv[1]
