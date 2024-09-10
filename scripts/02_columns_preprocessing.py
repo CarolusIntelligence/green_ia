@@ -2299,6 +2299,8 @@ def stores_processing(df, values_to_replace):
 
 def delete_useless_lines(df, values_to_replace):
     df = df[~df['name'].isin(values_to_replace) & df['name'].notna()]
+    df = df[~((df['ingredients'] == 'empty') & (df['ecoscore_data'] == 'empty'))]
+    df = df[~((df['food_group'] == 'empty') & (df['ecoscore_data'] == 'empty'))]
     return df
 
 def process_chunk(chunk, values_to_replace):
