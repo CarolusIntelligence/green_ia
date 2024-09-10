@@ -25,11 +25,18 @@ def delete_file(file_path):
         print(f"ERROR, does not exists: {file_path}")
 
 def rename_columns_processing(df): 
-    df.rename(columns={'pnns_groups_1': 'groups'}, inplace=True)
+    df.rename(columns={'pnns_groups_1': 'pnns_1'}, inplace=True)
     df.rename(columns={'ingredients_tags': 'ingredients_temp'}, inplace=True)
     df.rename(columns={'product_name': 'name'}, inplace=True)
     df.rename(columns={'categories_tags': 'categories_temp'}, inplace=True)
-    #df.rename(columns={'labels_tags': 'labels_temp'}, inplace=True)
+    df.rename(columns={'food_groups_tags': 'food_group'}, inplace=True)
+    df.rename(columns={'nova_group': 'nova'}, inplace=True)
+    df.rename(columns={'ingredients_from_or_that_may_be_from_palm_oil_n': 'palm_oil'}, inplace=True)
+    df.rename(columns={'nutrient_levels_tags': 'nutrient_level'}, inplace=True)
+    df.rename(columns={'additives_old_n': 'additives'}, inplace=True)
+    df.rename(columns={'_keywords': 'keywords'}, inplace=True)
+    df.rename(columns={'packaging_tags': 'packaging'}, inplace=True)
+    df.rename(columns={'compared_to_category': 'main_category'}, inplace=True)
     return df
 
 def countries_processing(df, values_to_replace): 
@@ -2138,30 +2145,6 @@ def countries_processing(df, values_to_replace):
     df['countries'] = df['countries'].map(country_to_id).fillna(np.nan)
     return df
 
-def labels_processing(df, values_to_replace): 
-    df['labels_temp'] = df['labels_temp'].replace(values_to_replace, np.nan)
-    df['labels_temp'] = df['labels_temp'].apply(
-    lambda x: x if isinstance(x, list) 
-    else ([] if pd.isna(x) or x is None else x.split(', ')))
-    df['labels_temp'] = df['labels_temp'].apply(lambda x: x if isinstance(x, list) else ([] if x is np.nan else x.split(', ')))
-    def extract_en_labels(labels_list):
-        if isinstance(labels_list, str):
-            labels_list = labels_list.split(', ')
-        return [ingredient.split(':', 1)[-1] for ingredient in labels_list if ingredient.startswith('en:')]
-    df['labels'] = df['labels_temp'].apply(extract_en_labels)
-    df['labels'] = df['labels'].apply(lambda x: ', '.join(x) if x else np.nan)
-    df.drop(columns=['labels_temp'], inplace=True)
-    def count_commas_plus_one(value):
-        if pd.isna(value):  
-            return 0
-        return value.count(',') +1
-    df['labels_note'] = df['labels'].apply(count_commas_plus_one)
-    df.drop(columns=['labels'], inplace=True)
-    # ramène toutes les notes > 9 à 9
-    df['labels_note'] = df['labels_note'].apply(lambda x: min(x, 9) if pd.notna(x) else x)
-    df['labels_note'] = df['labels_note'].apply(lambda x: (x - 0) / (9 - 0) if pd.notna(x) else x)
-    return df
-
 def ecoscore_tags_processing(df, values_to_replace): 
     df['ecoscore_tags'] = df['ecoscore_tags'].replace(values_to_replace, np.nan) 
     df['ecoscore_tags'] = df['ecoscore_tags'].astype(str)
@@ -2182,10 +2165,10 @@ def ecoscore_score_processing(df, values_to_replace):
     df['ecoscore_score'] = df['ecoscore_score'].apply(lambda x: max(0, min(x, 100)) if not pd.isna(x) else x)
     return df
 
-def groups_processing(df, values_to_replace):
-    df['groups'] = df['groups'].replace(values_to_replace, np.nan) 
-    df['groups'] = df['groups'].astype(str)
-    df['groups'] = df['groups'].str.lower() 
+def pnns_1_processing(df, values_to_replace):
+    df['pnns_1'] = df['pnns_1'].replace(values_to_replace, np.nan) 
+    df['pnns_1'] = df['pnns_1'].astype(str)
+    df['pnns_1'] = df['pnns_1'].str.lower() 
     ecoscore_grad_map = {'sugary snacks': 0,
                         'fat and sauces': 1,
                         'composite foods': 2,
@@ -2197,17 +2180,18 @@ def groups_processing(df, values_to_replace):
                             'alcoholic beverages': 8, 
                             'salty snacks': 9, 
                             'sugary-snacks': 10}
-    df['groups'] = df['groups'].apply(lambda x: ', '.join(x) if isinstance(x, list) else x)
-    df['groups'] = df['groups'].replace(ecoscore_grad_map, regex=True)
-    df['groups'] = pd.to_numeric(df['groups'], errors='coerce')
-    df['groups'] = df['groups'].replace(values_to_replace, np.nan) 
+    df['pnns_1'] = df['pnns_1'].apply(lambda x: ', '.join(x) if isinstance(x, list) else x)
+    df['pnns_1'] = df['pnns_1'].replace(ecoscore_grad_map, regex=True)
+    df['pnns_1'] = pd.to_numeric(df['pnns_1'], errors='coerce')
+    df['pnns_1'] = df['pnns_1'].replace(values_to_replace, np.nan) 
     return df
 
 def name_processing(df, values_to_replace): 
     df['name'] = df['name'].astype(str)
     df.loc[:, 'name'] = df['name'].str.lower()
     df = df[df['name'] != ''].copy()  
-    df['ingredients'] = df['ingredients'].replace(values_to_replace, 'empty') 
+    df['name'] = df['name'].replace(values_to_replace, 'empty') 
+    df['name'] = df['name'].str.replace(r'[:{}\'",_\[\]-]', ' ', regex=True)
     return df
 
 def ingredients_processing(df, values_to_replace): 
@@ -2222,17 +2206,7 @@ def ingredients_processing(df, values_to_replace):
     df['ingredients'] = df['ingredients'].apply(lambda x: ', '.join(x))
     df['ingredients'] = df['ingredients'].replace("", np.nan) 
     df['ingredients'] = df['ingredients'].replace(values_to_replace, 'empty') 
-    return df
-
-def packaging_processing(df, values_to_replace): 
-    def remove_two_letters_and_colon(s):
-        if isinstance(s, str):
-            return re.sub(r'\b\w{2}:\b', '', s)
-        return s
-    df['packaging'] = df['packaging'].apply(remove_two_letters_and_colon)
-    df['packaging'] = df['packaging'].astype(str)
-    df['packaging'] = df['packaging'].str.lower()
-    df['packaging'] = df['packaging'].replace(values_to_replace, 'empty') 
+    df['ingredients'] = df['ingredients'].str.replace(r'[:{}\'",_\[\]-]', ' ', regex=True)
     return df
 
 def categories_processing(df, values_to_replace): 
@@ -2248,6 +2222,79 @@ def categories_processing(df, values_to_replace):
     df['categories'] = df['categories'].apply(lambda x: ', '.join(x))
     df['categories'] = df['categories'].replace("", np.nan)
     df['categories'] = df['categories'].replace(values_to_replace, 'empty') 
+    df['categories'] = df['categories'].str.replace(r'[:{}\'",_\[\]-]', ' ', regex=True)
+    return df
+
+def food_groups_processing(df, values_to_replace):
+    df['food_group'] = df['food_group'].replace(values_to_replace, 'empty') 
+    df['food_group'] = df['food_group'].apply(lambda x: ', '.join(map(str, x)))
+    df['food_group'] = df['food_group'].str.replace('en:', ' ', regex=False)
+    df['food_group'] = df['food_group'].str.replace(',', '', regex=False)
+    df['food_group'] = df['food_group'].replace(values_to_replace, 'empty') 
+    df['food_group'] = df['food_group'].str.replace(r'[:{}\'",_\[\]-]', ' ', regex=True)
+    return df
+
+def nutrient_level_processing(df, values_to_replace):
+    df['nutrient_level'] = df['nutrient_level'].replace(values_to_replace, 'empty') 
+    df['nutrient_level'] = df['nutrient_level'].apply(lambda x: ', '.join(map(str, x)))
+    df['nutrient_level'] = df['nutrient_level'].str.replace('en:', ' ', regex=False)
+    df['nutrient_level'] = df['nutrient_level'].str.replace(',', '', regex=False)
+    df['nutrient_level'] = df['nutrient_level'].replace(values_to_replace, 'empty') 
+    df['nutrient_level'] = df['nutrient_level'].str.replace(r'[:{}\'",_\[\]-]', ' ', regex=True)
+    return df
+
+def main_category_processing(df, values_to_replace):
+    df['main_category'] = df['main_category'].replace(values_to_replace, 'empty') 
+    df['main_category'] = df['main_category'].str.replace('en:', ' ', regex=False)
+    df['main_category'] = df['main_category'].str.replace(',', '', regex=False)
+    df['main_category'] = df['main_category'].replace(values_to_replace, 'empty') 
+    df['main_category'] = df['main_category'].str.replace(r'[:{}\'",_\[\]-]', ' ', regex=True)
+    return df
+
+def packaging_tags_processing(df, values_to_replace):
+    df['packaging'] = df['packaging'].replace(values_to_replace, 'empty') 
+    df['packaging'] = df['packaging'].apply(lambda x: ', '.join(map(str, x)))
+    df['packaging'] = df['packaging'].str.replace(r'\b\w{2}:\s*', ' ', regex=True)
+    df['packaging'] = df['packaging'].str.replace(',', '', regex=False)
+    df['packaging'] = df['packaging'].replace(values_to_replace, 'empty') 
+    df['packaging'] = df['packaging'].str.replace(r'[:{}\'",_\[\]-]', ' ', regex=True)
+    return df
+
+def keyword_processing(df, values_to_replace):
+    df['keywords'] = df['keywords'].replace(values_to_replace, 'empty') 
+    df['keywords'] = df['keywords'].apply(lambda x: ', '.join(map(str, x)))
+    df['keywords'] = df['keywords'].str.replace(',', '', regex=False)
+    df['keywords'] = df['keywords'].replace(values_to_replace, 'empty') 
+    df['keywords'] = df['keywords'].str.replace(r'[:{}\'",_\[\]-]', ' ', regex=True)
+    return df
+
+def nutriscore_tags_processing(df, values_to_replace):
+    df['nutriscore_tags'] = df['nutriscore_tags'].replace(values_to_replace, np.nan) 
+    df['nutriscore_tags'] = df['nutriscore_tags'].astype(str)
+    df['nutriscore_tags'] = df['nutriscore_tags'].str.lower() 
+    ecoscore_grad_map = {'a': 0,
+                        'b': 1,
+                        'c': 2,
+                        'd': 3,
+                        'e': 4,}
+    df['nutriscore_tags'] = df['nutriscore_tags'].apply(lambda x: ', '.join(x) if isinstance(x, list) else x)
+    df['nutriscore_tags'] = df['nutriscore_tags'].replace(ecoscore_grad_map, regex=True)
+    df['nutriscore_tags'] = pd.to_numeric(df['nutriscore_tags'], errors='coerce')
+    return df
+
+def ecoscore_data_processing(df, values_to_replace):
+    df['ecoscore_data'] = df['ecoscore_data'].replace(values_to_replace, 'empty') 
+    df['ecoscore_data'] = df['ecoscore_data'].astype(str)
+    df.loc[:, 'ecoscore_data'] = df['ecoscore_data'].str.lower()
+    df['ecoscore_data'] = df['ecoscore_data'].str.replace(r'[:{}\'",_\[\]-]', ' ', regex=True)
+    df['ecoscore_data'] = df['ecoscore_data'].replace(values_to_replace, 'empty') 
+    return df
+
+def stores_processing(df, values_to_replace):
+    df['stores'] = df['stores'].replace(values_to_replace, 'empty') 
+    df['stores'] = df['stores'].astype(str)
+    df['stores'] = df['stores'].str.lower() 
+    df['stores'] = df['stores'].str.replace(r'[:{}\'",_\[\]-]', ' ', regex=True)
     return df
 
 def delete_useless_lines(df, values_to_replace):
@@ -2258,33 +2305,20 @@ def process_chunk(chunk, values_to_replace):
     df = chunk.copy()
     rename_columns_processing(df)
     ecoscore_score_processing(df, values_to_replace)
-    groups_processing(df, values_to_replace)
+    pnns_1_processing(df, values_to_replace)
     ingredients_processing(df, values_to_replace)
-    #packaging_processing(df, values_to_replace)
     ecoscore_tags_processing(df, values_to_replace)
     categories_processing(df, values_to_replace)
     name_processing(df, values_to_replace)
     countries_processing(df, values_to_replace)
-    #labels_processing(df, values_to_replace)
-
-    # CHANTIER ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-    #allergens_processing(df, values_to_replace)
-    #ecoscore_data_processing(df, values_to_replace)
-    #food_groups_processing(df, values_to_replace)
-    #nova_group_processing(df, values_to_replace)
-    #palm_oil_processing(df, values_to_replace)
-    #nutrient_level_processing(df, values_to_replace)
-    #nutriscore_tags_processing(df, values_to_replace)
-    #nutriments_processing(df, values_to_replace)
-    #additives_processing(df, values_to_replace)
-    #stores_processing(df, values_to_replace)
-    #popularity_processing(df, values_to_replace)
-    #packaging_materials_processing(df, values_to_replace)
-    #compared_to_category_processing(df, values_to_replace)
-    #nutriscore_data_processing(df, values_to_replace)
-    #keyword_processing(df, values_to_replace)
-    #packaging_tags_processing(df, values_to_replace)
-
+    ecoscore_data_processing(df, values_to_replace)
+    food_groups_processing(df, values_to_replace)
+    nutrient_level_processing(df, values_to_replace)
+    stores_processing(df, values_to_replace)
+    main_category_processing(df, values_to_replace)
+    nutriscore_tags_processing(df, values_to_replace)
+    keyword_processing(df, values_to_replace)
+    packaging_tags_processing(df, values_to_replace)
     delete_useless_lines(df, values_to_replace)
     return df
 
@@ -2297,6 +2331,7 @@ def browse_file(estimated_chunks, jsonl_02, jsonl_03, chunk_size, values_to_repl
             processed_chunk = process_chunk(chunk, values_to_replace)
             processed_chunk.to_json(outfile, orient='records', lines=True)
             print(f"-----------------------------------------------------------> progress: {(chunk_iter * 100) / estimated_chunks} %")            
+
 
 
 ###############################################################################
@@ -2314,7 +2349,8 @@ def main(chunk_size, file_id, data_path):
                          "not-applicable",
                          "nan",
                          "NaN",
-                         "0", 
+                         "0",
+                         "e m p t y", 
                          np.nan]
     print("estimating necessary chunk number")
     estimated_chunks = count_chunks(jsonl_02, chunk_size)
