@@ -86,7 +86,7 @@ def save_predictions(data, predictions, output_file):
         for item in data:
             f.write(json.dumps(item) + "\n")
 
-def train(model, train_loader, val_loader, epochs=10, lr=1e-5, save_path="best_model_00.ci"):
+def train(model, train_loader, val_loader, epochs=20, lr=1e-5, save_path="best_model_01.ci"):
     optimizer = optim.AdamW(model.parameters(), lr=lr)
     criterion = nn.MSELoss()
     
@@ -95,7 +95,7 @@ def train(model, train_loader, val_loader, epochs=10, lr=1e-5, save_path="best_m
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
     
-    best_val_loss = float('inf')
+    best_val_loss = float('inf') 
     
     for epoch in range(epochs):
         model.train()
@@ -114,15 +114,17 @@ def train(model, train_loader, val_loader, epochs=10, lr=1e-5, save_path="best_m
             
             train_loss += loss.item()
         
-        print(f"epoch {epoch+1}/{epochs}, Loss: {train_loss / len(train_loader)}")
+        print(f"Epoch {epoch+1}/{epochs}, Loss: {train_loss / len(train_loader)}")
         
         val_loss = validate(model, val_loader, criterion, device)
-        scheduler.step(val_loss)
+        scheduler.step(val_loss) 
+        
         if val_loss < best_val_loss:
+            print(f"Meilleure Validation Loss: {val_loss}, sauvegarde du modèle.")
             best_val_loss = val_loss
             save_model(model, save_path)
     
-    print(f"best model saved: {best_val_loss}")
+    print(f"Meilleur modèle sauvegardé avec une perte de validation: {best_val_loss}")
 
 def validate(model, val_loader, criterion, device):
     model.eval()
@@ -136,7 +138,7 @@ def validate(model, val_loader, criterion, device):
             loss = criterion(predictions.squeeze(), labels)
             val_loss += loss.item()
     
-    print(f"validation loss: {val_loss / len(val_loader)}")
+    print(f"Validation Loss: {val_loss / len(val_loader)}")
     return val_loss
 
 def load_jsonl(file_path):
@@ -145,8 +147,6 @@ def load_jsonl(file_path):
         for line in f:
             data.append(json.loads(line.strip()))
     return data
-
-
 
 if __name__ == "__main__":
     train_data = load_jsonl("../../data/05_data/05_train_02.jsonl")
@@ -161,16 +161,16 @@ if __name__ == "__main__":
     test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
     valid_loader = DataLoader(valid_dataset, batch_size=32, shuffle=False)
     
-    num_features = 6
+    num_features = 6  
     model = HybridModel(num_features, dropout=0.5)
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    train(model, train_loader, valid_loader, epochs=10, lr=1e-5, save_path="best_model_00.ci")
+    train(model, train_loader, valid_loader, epochs=10, lr=1e-5, save_path="best_model_01.ci")
     
-    model = load_model(model, "best_model_00.ci")
+    model = load_model(model, "best_model_01.ci")
     
     test_predictions = test_model(model, test_loader, device)
-    save_predictions(test_data, test_predictions, "test_predictions.jsonl")
+    save_predictions(test_data, test_predictions, "test_pred_01.jsonl")
     
     valid_predictions = test_model(model, valid_loader, device)
-    save_predictions(valid_data, valid_predictions, "valid_predictions_with_predictions.jsonl")
+    save_predictions(valid_data, valid_predictions, "valid_pred_01.jsonl")
