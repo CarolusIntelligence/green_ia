@@ -2,4 +2,4 @@ data/*
 .vscode
 logs/*
 best_models/*
-scripts/test_model/*
+scripts/test_model/best_model_00.ci

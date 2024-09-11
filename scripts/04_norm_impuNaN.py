@@ -133,7 +133,7 @@ def calculate_global_median(file_path, column_name, chunksize):
     if all_values:
         return np.median(all_values)
     else:
-        raise ValueError(f"Error, only empty values {column_name}")
+        raise ValueError(f"ERROR, only empty values {column_name}")
     
 
 
