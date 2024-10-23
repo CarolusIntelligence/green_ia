@@ -1,1 +1,7 @@
 data/*
+.vscode
+logs/*
+best_models/*
+scripts/test_model/best_model_00.ci
+scripts/test_model/best_model_01.ci
+
